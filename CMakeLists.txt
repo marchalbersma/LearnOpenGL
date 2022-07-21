@@ -27,6 +27,7 @@ set(CHAPTERS
 
 set(1.GettingStarted
     1.HelloWindow
+    2.HelloTriangle
 )
 
 foreach (CHAPTER ${CHAPTERS})
