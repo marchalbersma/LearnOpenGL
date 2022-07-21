@@ -13,7 +13,7 @@ namespace GLFW
 
     void init();
     GLFWwindow* createWindow(int width, int height);
-    void loop(GLFWwindow* window, const function<void()> &callback);
+    void loop(GLFWwindow* window, const function<void()>& callback);
 }
 
 #endif

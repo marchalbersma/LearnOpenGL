@@ -40,7 +40,7 @@ GLFWwindow* GLFW::createWindow(const int width, const int height)
     return window;
 }
 
-void GLFW::loop(GLFWwindow* window, const function<void()> &callback)
+void GLFW::loop(GLFWwindow* window, const function<void()>& callback)
 {
     while (!glfwWindowShouldClose(window))
     {
