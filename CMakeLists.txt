@@ -22,7 +22,9 @@ set(CHAPTERS
     1.GettingStarted
 )
 
-set(1.GettingStarted)
+set(1.GettingStarted
+    1.HelloWindow
+)
 
 foreach (CHAPTER ${CHAPTERS})
     string(FIND ${CHAPTER} . PERIOD_POSITION)
