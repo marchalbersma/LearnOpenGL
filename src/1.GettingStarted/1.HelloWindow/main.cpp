@@ -4,7 +4,9 @@
 int main()
 {
     GLFW::init();
-    GLFW::createWindow(1280, 720);
+    GLFWwindow* window = GLFW::createWindow(1280, 720);
 
     Glad::init();
+
+    GLFW::loop(window, []() {});
 }

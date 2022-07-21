@@ -1,6 +1,7 @@
 #define GLFW_INCLUDE_NONE
 
 #include <GLFW.h>
+#include <functional>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
@@ -37,4 +38,22 @@ GLFWwindow* GLFW::createWindow(const int width, const int height)
     });
 
     return window;
+}
+
+void GLFW::loop(GLFWwindow* window, const function<void()> &callback)
+{
+    while (!glfwWindowShouldClose(window))
+    {
+        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        {
+            glfwSetWindowShouldClose(window, true);
+        }
+
+        callback();
+
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+    }
+
+    glfwTerminate();
 }
