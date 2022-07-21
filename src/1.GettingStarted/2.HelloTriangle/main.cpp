@@ -1,6 +1,7 @@
 #include <glad/glad.h>
 #include <Glad.h>
 #include <GLFW.h>
+#include <Shader.h>
 
 int main()
 {
@@ -22,6 +23,8 @@ int main()
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    Shader shader("shader.vert", "shader.frag");
 
     GLFW::loop(window, []() {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);

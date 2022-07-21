@@ -18,6 +18,7 @@ link_libraries(
 set(SRC_FILES
     Glad.cpp
     GLFW.cpp
+    Shader.cpp
 )
 list(TRANSFORM SRC_FILES PREPEND ${CMAKE_SOURCE_DIR}/src/)
 
@@ -35,6 +36,22 @@ foreach (CHAPTER ${CHAPTERS})
     string(SUBSTRING ${CHAPTER} 0 ${PERIOD_POSITION} CHAPTER_NUMBER)
 
     foreach (SECTION ${${CHAPTER}})
-        add_executable(${CHAPTER_NUMBER}.${SECTION} ${CMAKE_SOURCE_DIR}/src/${CHAPTER}/${SECTION}/main.cpp ${SRC_FILES})
+        set(SECTION_NAME ${CHAPTER_NUMBER}.${SECTION})
+        set(SECTION_DIR ${CMAKE_SOURCE_DIR}/src/${CHAPTER}/${SECTION})
+
+        add_executable(${SECTION_NAME} ${SECTION_DIR}/main.cpp ${SRC_FILES})
+
+        file(GLOB SHADERS
+            ${SECTION_DIR}/*.frag
+            ${SECTION_DIR}/*.vert
+        )
+
+        foreach (SHADER ${SHADERS})
+            add_custom_command(
+                TARGET ${SECTION_NAME}
+                PRE_BUILD COMMAND ${CMAKE_COMMAND}
+                -E copy_if_different ${SHADER} $<TARGET_FILE_DIR:${SECTION_NAME}>
+            )
+        endforeach(SHADER)
     endforeach (SECTION)
 endforeach (CHAPTER)
