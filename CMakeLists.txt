@@ -14,3 +14,21 @@ link_libraries(
     GLAD
     GLFW
 )
+
+set(SRC_FILES)
+list(TRANSFORM SRC_FILES PREPEND ${CMAKE_SOURCE_DIR}/src/)
+
+set(CHAPTERS
+    1.GettingStarted
+)
+
+set(1.GettingStarted)
+
+foreach (CHAPTER ${CHAPTERS})
+    string(FIND ${CHAPTER} . PERIOD_POSITION)
+    string(SUBSTRING ${CHAPTER} 0 ${PERIOD_POSITION} CHAPTER_NUMBER)
+
+    foreach (SECTION ${${CHAPTER}})
+        add_executable(${CHAPTER_NUMBER}.${SECTION} ${CMAKE_SOURCE_DIR}/src/${CHAPTER}/${SECTION}/main.cpp ${SRC_FILES})
+    endforeach (SECTION)
+endforeach (CHAPTER)
