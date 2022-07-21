@@ -56,6 +56,6 @@ foreach (CHAPTER ${CHAPTERS})
                 PRE_BUILD COMMAND ${CMAKE_COMMAND}
                 -E copy_if_different ${SHADER} $<TARGET_FILE_DIR:${SECTION_NAME}>
             )
-        endforeach(SHADER)
+        endforeach (SHADER)
     endforeach (SECTION)
 endforeach (CHAPTER)
