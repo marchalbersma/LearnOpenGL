@@ -3,6 +3,10 @@ project(LearnOpenGL)
 
 set(CMAKE_CXX_STANDARD 23)
 
+if (MSVC)
+    string(APPEND CMAKE_EXE_LINKER_FLAGS " /NODEFAULTLIB:msvcrt.lib")
+endif (MSVC)
+
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
 add_library(GLAD ${CMAKE_SOURCE_DIR}/lib/glad/glad.c)
