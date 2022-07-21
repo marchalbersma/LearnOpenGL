@@ -16,6 +16,7 @@ link_libraries(
 )
 
 set(SRC_FILES
+    Glad.cpp
     GLFW.cpp
 )
 list(TRANSFORM SRC_FILES PREPEND ${CMAKE_SOURCE_DIR}/src/)
