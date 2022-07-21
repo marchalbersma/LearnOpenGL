@@ -1,1 +1,6 @@
-int main() {}
+#include <GLFW.h>
+
+int main()
+{
+    GLFW::init();
+}

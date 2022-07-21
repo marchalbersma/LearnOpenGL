@@ -15,7 +15,9 @@ link_libraries(
     GLFW
 )
 
-set(SRC_FILES)
+set(SRC_FILES
+    GLFW.cpp
+)
 list(TRANSFORM SRC_FILES PREPEND ${CMAKE_SOURCE_DIR}/src/)
 
 set(CHAPTERS
