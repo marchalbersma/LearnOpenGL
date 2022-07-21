@@ -1,4 +1,7 @@
+#define GLFW_INCLUDE_NONE
+
 #include <GLFW.h>
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
 
@@ -27,6 +30,11 @@ GLFWwindow* GLFW::createWindow(const int width, const int height)
     }
 
     glfwMakeContextCurrent(window);
+
+    glfwSetFramebufferSizeCallback(window, [](GLFWwindow* window, const int width, const int height)
+    {
+        glViewport(0, 0, width, height);
+    });
 
     return window;
 }
