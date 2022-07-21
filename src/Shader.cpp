@@ -27,7 +27,8 @@ string Shader::read(const char* path)
 
     file.exceptions(ifstream::failbit | ifstream::badbit);
 
-    try {
+    try
+    {
         stringstream stream;
 
         file.open(path);
@@ -35,7 +36,9 @@ string Shader::read(const char* path)
         file.close();
 
         code = stream.str();
-    } catch (ifstream::failure& exception) {
+    }
+    catch (ifstream::failure& exception)
+    {
         cerr << "Failed to read shader file " << path << endl << exception.what() << endl;
         exit(-1);
     }
@@ -53,7 +56,8 @@ unsigned int Shader::compile(const char* code, int type)
     glCompileShader(shader);
     glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
 
-    if (!success) {
+    if (!success)
+    {
         glGetShaderInfoLog(shader, 1024, nullptr, log);
         cerr << "Failed to compile shader of type 0x" << hex << uppercase << type << endl << log << endl;
         exit(-1);
@@ -73,7 +77,8 @@ unsigned int Shader::link(unsigned int vertex, unsigned int fragment)
     glLinkProgram(program);
     glGetProgramiv(program, GL_LINK_STATUS, &success);
 
-    if (!success) {
+    if (!success)
+    {
         glGetProgramInfoLog(program, 1024, nullptr, log);
         cerr << "Failed to link shaders" << endl << log << endl;
         exit(-1);
