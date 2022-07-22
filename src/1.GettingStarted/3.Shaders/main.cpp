@@ -52,15 +52,12 @@ int main()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
+        shader.use();
+
         if (strcmp(shaderName, "fragment-color-from-uniform") == 0)
         {
             float green = (sin(static_cast<float>(glfwGetTime())) / 2.0f) + 0.5f;
-            shader.use();
             glUniform4f(uniformLocation, 0.0f, green, 0.0f, 1.0f);
-        }
-        else
-        {
-            shader.use();
         }
 
         glBindVertexArray(VAO);
