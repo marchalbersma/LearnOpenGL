@@ -1,6 +1,7 @@
 #include <glad/glad.h>
 #include <Glad.h>
 #include <GLFW.h>
+#include <Shader.h>
 
 int main()
 {
@@ -26,10 +27,13 @@ int main()
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)nullptr);
     glEnableVertexAttribArray(0);
 
-    GLFW::loop(window, [VAO]() {
+    Shader shader("fragment-color-from-vertex.vert", "fragment-color-from-vertex.frag");
+
+    GLFW::loop(window, [VAO, shader]() {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
+        shader.use();
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 3);
     });
