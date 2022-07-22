@@ -9,32 +9,54 @@ int main()
 {
     const char* shaders[] = {
         "fragment-color-from-vertex",
-        "fragment-color-from-uniform"
+        "fragment-color-from-uniform",
+        "fragment-color-interpolation"
     };
 
-    const char* shaderName = Console::getUserChoice("shader", shaders, 2);
+    const char* shaderName = Console::getUserChoice("shader", shaders, 3);
 
     GLFW::init();
     GLFWwindow* window = GLFW::createWindow(1280, 720);
 
     Glad::init();
 
-    const float vertices[] = {
-        -0.33f, -0.5f,  0.0f,
-        0.33f,  -0.5f,  0.0f,
-        0.0f,   0.5f,   0.0f
-    };
-
     unsigned int VBO, VAO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glBindVertexArray(VAO);
 
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    if (strcmp(shaderName, "fragment-color-interpolation") == 0)
+    {
+        const float vertices[] = {
+                // Positions                        // Colors
+                -0.33f, -0.5f,  0.0f,   1.0f,   0.0f,   0.0f,
+                0.33f,  -0.5f,  0.0f,   0.0f,   1.0f,   0.0f,
+                0.0f,   0.5f,   0.0f,    0.0f,   0.0f,   1.0f
+        };
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)nullptr);
-    glEnableVertexAttribArray(0);
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)nullptr);
+        glEnableVertexAttribArray(0);
+
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+        glEnableVertexAttribArray(1);
+    }
+    else
+    {
+        const float vertices[] = {
+                -0.33f, -0.5f,  0.0f,
+                0.33f,  -0.5f,  0.0f,
+                0.0f,   0.5f,   0.0f
+        };
+
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)nullptr);
+        glEnableVertexAttribArray(0);
+    }
 
     Shader shader(
         Files::getVertexShaderPath(shaderName),
