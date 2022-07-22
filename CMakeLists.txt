@@ -47,15 +47,17 @@ foreach (CHAPTER ${CHAPTERS})
         add_executable(${SECTION_NAME} ${SECTION_DIR}/main.cpp ${SRC_FILES})
 
         file(GLOB SHADERS
-            ${SECTION_DIR}/*.frag
-            ${SECTION_DIR}/*.vert
+            ${SECTION_DIR}/shaders/*.frag
+            ${SECTION_DIR}/shaders/*.vert
         )
 
         foreach (SHADER ${SHADERS})
+            get_filename_component(SHADER_FILENAME ${SHADER} NAME)
+
             add_custom_command(
                 TARGET ${SECTION_NAME}
                 PRE_BUILD COMMAND ${CMAKE_COMMAND}
-                -E copy_if_different ${SHADER} $<TARGET_FILE_DIR:${SECTION_NAME}>
+                -E copy_if_different ${SHADER} $<TARGET_FILE_DIR:${SECTION_NAME}>/shaders/${SHADER_FILENAME}
             )
         endforeach (SHADER)
     endforeach (SECTION)

@@ -27,7 +27,7 @@ int main()
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)nullptr);
     glEnableVertexAttribArray(0);
 
-    Shader shader("fragment-color-from-vertex.vert", "fragment-color-from-vertex.frag");
+    Shader shader("shaders/fragment-color-from-vertex.vert", "shaders/fragment-color-from-vertex.frag");
 
     GLFW::loop(window, [VAO, shader]() {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
