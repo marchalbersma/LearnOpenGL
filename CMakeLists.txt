@@ -20,6 +20,8 @@ link_libraries(
 )
 
 set(SRC_FILES
+    Console.cpp
+    Files.cpp
     Glad.cpp
     GLFW.cpp
     Shader.cpp
