@@ -20,11 +20,10 @@ link_libraries(
 )
 
 set(SRC_FILES
-    Console.cpp
-    Files.cpp
     Glad.cpp
     GLFW.cpp
     Shader.cpp
+    Vertex.cpp
 )
 list(TRANSFORM SRC_FILES PREPEND ${CMAKE_SOURCE_DIR}/src/)
 
