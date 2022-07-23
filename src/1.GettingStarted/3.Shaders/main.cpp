@@ -9,7 +9,6 @@ using namespace glm;
 
 int main()
 {
-
     GLFW::init();
     GLFWwindow* window = GLFW::createWindow(1280, 720);
 
