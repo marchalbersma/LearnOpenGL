@@ -3,8 +3,6 @@
 
 #include <string>
 
-using namespace std;
-
 class Shader
 {
 public:
@@ -14,7 +12,7 @@ public:
     void use() const;
 
 private:
-    static string read(const char* path);
+    static std::string read(const char* path);
     static unsigned int compile(const char* code, int type);
     static unsigned int link(unsigned int vertex, unsigned int fragment);
 };
