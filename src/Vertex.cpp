@@ -1,3 +1,3 @@
-#include <Vertex.h>
+#include <Vertex.hpp>
 
 struct Vertex vertex;

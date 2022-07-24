@@ -1,6 +1,6 @@
 #include <glad/glad.h>
-#include <Glad.h>
-#include <GLFW.h>
+#include <Glad.hpp>
+#include <GLFW.hpp>
 
 int main()
 {

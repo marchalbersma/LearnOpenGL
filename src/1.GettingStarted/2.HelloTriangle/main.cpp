@@ -1,7 +1,7 @@
 #include <glad/glad.h>
-#include <Glad.h>
-#include <GLFW.h>
-#include <Shader.h>
+#include <Glad.hpp>
+#include <GLFW.hpp>
+#include <Shader.hpp>
 
 int main()
 {
