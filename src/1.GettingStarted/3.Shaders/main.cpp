@@ -44,14 +44,14 @@ int main()
     glEnableVertexAttribArray(1);
 
     Shader shader("shaders/shader.vert", "shaders/shader.frag");
-    int timeLocation = glGetUniformLocation(shader.id, "time");
+    shader.registerUniform("time");
 
-    GLFW::loop(window, [VAO, shader, timeLocation]() {
+    GLFW::loop(window, [VAO, shader]() {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
         shader.use();
-        glUniform1f(timeLocation, static_cast<float>(glfwGetTime()));
+        shader.setFloat("time", static_cast<float>(glfwGetTime()));
 
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 3);

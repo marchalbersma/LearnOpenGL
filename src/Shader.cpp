@@ -20,6 +20,24 @@ void Shader::use() const
     glUseProgram(id);
 }
 
+void Shader::registerUniform(const string& name)
+{
+    int location = glGetUniformLocation(id, name.c_str());
+
+    if (location == -1)
+    {
+        cerr << "Failed to find uniform " << name << endl;
+        exit(-1);
+    }
+
+    uniforms.insert(make_pair(name, location));
+}
+
+void Shader::setFloat(const string& uniformName, float value) const
+{
+    glUniform1f(uniforms.at(uniformName), value);
+}
+
 string Shader::read(const char* path)
 {
     string code;
