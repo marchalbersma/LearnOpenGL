@@ -35,6 +35,7 @@ set(1.GettingStarted
     1.HelloWindow
     2.HelloTriangle
     3.Shaders
+    4.Textures
 )
 
 foreach (CHAPTER ${CHAPTERS})
