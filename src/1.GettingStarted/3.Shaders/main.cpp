@@ -44,7 +44,7 @@ int main()
     glEnableVertexAttribArray(1);
 
     Shader shader("shaders/shader.vert", "shaders/shader.frag");
-    int timeLocation = glGetUniformLocation(shader.Id, "time");
+    int timeLocation = glGetUniformLocation(shader.id, "time");
 
     GLFW::loop(window, [VAO, shader, timeLocation]() {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);

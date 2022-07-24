@@ -9,7 +9,7 @@ using namespace std;
 
 Shader::Shader(const char* vertexPath, const char* fragmentPath)
 {
-    Id = link(
+    id = link(
         compile(read(vertexPath).c_str(), GL_VERTEX_SHADER),
         compile(read(fragmentPath).c_str(), GL_FRAGMENT_SHADER)
     );
@@ -17,7 +17,7 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
 
 void Shader::use() const
 {
-    glUseProgram(Id);
+    glUseProgram(id);
 }
 
 string Shader::read(const char* path)
