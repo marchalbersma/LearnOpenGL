@@ -77,7 +77,7 @@ int main()
 
     int textureWidth, textureHeight, textureChannels;
     unsigned char* textureData = stbi_load(
-            FileSystem::getResourcePath("textures/wall.jpg").c_str(),
+            texturePath.c_str(),
             &textureWidth,
             &textureHeight,
             &textureChannels,
@@ -92,6 +92,8 @@ int main()
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, textureWidth, textureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, textureData);
     glGenerateMipmap(GL_TEXTURE_2D);
+
+    glActiveTexture(GL_TEXTURE0);
 
     stbi_image_free(textureData);
 
