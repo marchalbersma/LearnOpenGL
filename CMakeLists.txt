@@ -20,6 +20,7 @@ link_libraries(
 )
 
 set(SRC_FILES
+    FileSystem.cpp
     Glad.cpp
     GLFW.cpp
     Shader.cpp
@@ -37,6 +38,8 @@ set(1.GettingStarted
     3.Shaders
     4.Textures
 )
+
+file(GLOB RESOURCES ${CMAKE_SOURCE_DIR}/resources/*/*.*)
 
 foreach (CHAPTER ${CHAPTERS})
     string(FIND ${CHAPTER} . PERIOD_POSITION)
@@ -62,5 +65,15 @@ foreach (CHAPTER ${CHAPTERS})
                 -E copy_if_different ${SHADER} $<TARGET_FILE_DIR:${SECTION_NAME}>/shaders/${SHADER_FILENAME}
             )
         endforeach (SHADER)
+
+        foreach (RESOURCE ${RESOURCES})
+            file(RELATIVE_PATH RESOURCE_PATH ${CMAKE_SOURCE_DIR} ${RESOURCE})
+
+            add_custom_command(
+                TARGET ${SECTION_NAME}
+                PRE_BUILD COMMAND ${CMAKE_COMMAND}
+                -E copy_if_different ${RESOURCE} $<TARGET_FILE_DIR:${SECTION_NAME}>/${RESOURCE_PATH}
+            )
+        endforeach (RESOURCE)
     endforeach (SECTION)
 endforeach (CHAPTER)
