@@ -16,16 +16,16 @@ int main()
 
     const Vertex vertices[] {
         Vertex {
-            vec3(0.33f, -0.5f, 0.0f),
-            vec3(1.0f, 0.0f, 0.0f)
+            .position = vec3(0.33f, -0.5f, 0.0f),
+            .color = vec3(1.0f, 0.0f, 0.0f)
         },
         Vertex {
-            vec3(-0.33f, -0.5f, 0.0f),
-            vec3(0.0f, 1.0f, 0.0f)
+            .position = vec3(-0.33f, -0.5f, 0.0f),
+            .color = vec3(0.0f, 1.0f, 0.0f)
         },
         Vertex {
-            vec3(0.0f, 0.5f, 0.0f),
-            vec3(0.0f, 0.0f, 1.0f)
+            .position = vec3(0.0f, 0.5f, 0.0f),
+            .color = vec3(0.0f, 0.0f, 1.0f)
         }
     };
 
