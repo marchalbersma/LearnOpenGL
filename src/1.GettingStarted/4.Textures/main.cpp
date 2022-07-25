@@ -24,18 +24,22 @@ int main()
     const Vertex vertices[] {
         Vertex {
             .position = vec3(-0.3f, 0.5f, 0.0f),
+            .color = vec3(1.0f, 1.0f, 0.0f),
             .textureCoordinates = vec2(0.0f, 1.0f)
         },
         Vertex {
             .position = vec3(0.3f, 0.5f, 0.0f),
+            .color = vec3(1.0f, 0.0f, 0.0f),
             .textureCoordinates = vec2(1.0f, 1.0f)
         },
         Vertex {
             .position = vec3(0.3f, -0.5f, 0.0f),
+            .color = vec3(0.0f, 1.0f, 0.0f),
             .textureCoordinates = vec2(1.0f, 0.0f)
         },
         Vertex {
             .position = vec3(-0.3f, -0.5f, 0.0f),
+            .color = vec3(0.0f, 0.0f, 1.0f),
             .textureCoordinates = vec2(0.0f, 0.0f)
         }
     };
@@ -60,8 +64,11 @@ int main()
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position.x));
     glEnableVertexAttribArray(0);
 
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, textureCoordinates.x));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, color.r));
     glEnableVertexAttribArray(1);
+
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, textureCoordinates.x));
+    glEnableVertexAttribArray(2);
 
     unsigned int texture;
     glGenTextures(1, &texture);
@@ -73,7 +80,7 @@ int main()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    const string texturePath = FileSystem::getResourcePath("textures/wall.jpg");
+    const string texturePath = FileSystem::getResourcePath("textures/container.jpg");
 
     int textureWidth, textureHeight, textureChannels;
     unsigned char* textureData = stbi_load(
