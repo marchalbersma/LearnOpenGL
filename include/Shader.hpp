@@ -13,7 +13,7 @@ public:
     void use() const;
     void registerUniform(const std::string& name);
     void setFloat(const std::string& uniformName, float value) const;
-
+    void setInt(const std::string& uniformName, int value) const;
 private:
     std::unordered_map<std::string, int> uniforms;
 

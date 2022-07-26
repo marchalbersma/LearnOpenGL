@@ -24,6 +24,7 @@ set(SRC_FILES
     Glad.cpp
     GLFW.cpp
     Shader.cpp
+    Texture.cpp
     Vertex.cpp
 )
 list(TRANSFORM SRC_FILES PREPEND ${CMAKE_SOURCE_DIR}/src/)

@@ -1,14 +1,10 @@
-#define STB_IMAGE_IMPLEMENTATION
-
 #include <FileSystem.hpp>
 #include <glad/glad.h>
 #include <Glad.hpp>
 #include <GLFW.hpp>
 #include <glm/glm.hpp>
-#include <iostream>
 #include <Shader.hpp>
-#include <stb/stb_image.h>
-#include <string>
+#include <Texture.hpp>
 #include <Vertex.hpp>
 
 using namespace glm;
@@ -70,47 +66,24 @@ int main()
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, textureCoordinates.x));
     glEnableVertexAttribArray(2);
 
-    unsigned int texture;
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    const string texturePath = FileSystem::getResourcePath("textures/container.jpg");
-
-    int textureWidth, textureHeight, textureChannels;
-    unsigned char* textureData = stbi_load(
-            texturePath.c_str(),
-            &textureWidth,
-            &textureHeight,
-            &textureChannels,
-            0
-    );
-
-    if (!textureData)
-    {
-        cerr << "Failed to load texture " << texturePath << endl;
-        exit(-1);
-    }
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, textureWidth, textureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, textureData);
-    glGenerateMipmap(GL_TEXTURE_2D);
-
-    glActiveTexture(GL_TEXTURE0);
-
-    stbi_image_free(textureData);
+    Texture texture1(GL_TEXTURE_2D, FileSystem::getResourcePath("textures/container.jpg").c_str());
+    Texture texture2(GL_TEXTURE_2D, FileSystem::getResourcePath("textures/awesome-face.png").c_str());
 
     Shader shader("shaders/shader.vert", "shaders/shader.frag");
+    shader.use();
 
-    GLFW::loop(window, [VAO, texture, shader]() {
+    shader.registerUniform("texture1");
+    shader.setInt("texture1", 0);
+
+    shader.registerUniform("texture2");
+    shader.setInt("texture2", 1);
+
+    GLFW::loop(window, [VAO, texture1, texture2, shader]() {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glBindTexture(GL_TEXTURE_2D, texture);
+        texture1.bind(0);
+        texture2.bind(1);
 
         shader.use();
 
