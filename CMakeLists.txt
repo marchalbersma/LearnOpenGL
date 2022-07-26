@@ -38,6 +38,7 @@ set(1.GettingStarted
     2.HelloTriangle
     3.Shaders
     4.Textures
+    5.Transformations
 )
 
 file(GLOB RESOURCES ${CMAKE_SOURCE_DIR}/resources/*/*.*)
