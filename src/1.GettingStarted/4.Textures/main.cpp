@@ -1,8 +1,10 @@
+#include <algorithm>
 #include <FileSystem.hpp>
 #include <glad/glad.h>
 #include <Glad.hpp>
 #include <GLFW.hpp>
 #include <glm/glm.hpp>
+#include <iostream>
 #include <Shader.hpp>
 #include <Texture.hpp>
 #include <Vertex.hpp>
@@ -72,13 +74,35 @@ int main()
     Shader shader("shaders/shader.vert", "shaders/shader.frag");
     shader.use();
 
+    shader.registerUniform("mixValue");
+    shader.registerUniform("size");
+    shader.registerUniform("time");
+
     shader.registerUniform("texture1");
     shader.setInt("texture1", 0);
 
     shader.registerUniform("texture2");
     shader.setInt("texture2", 1);
 
-    GLFW::loop(window, [VAO, texture1, texture2, shader]() {
+    float mixValue = 0.2f;
+    float size = 0.5f;
+
+    cout
+        << "Use the arrow keys to control the Awesome Face texture:" << endl
+        << "UP & DOWN control the blending" << endl
+        << "LEFT & RIGHT control the size" << endl;
+
+    GLFW::loop(window, [&]() {
+        if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) mixValue += 0.025f;
+        if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) mixValue -= 0.025f;
+
+        mixValue = std::clamp(mixValue, 0.0f, 1.0f);
+
+        if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) size += 0.01f;
+        if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) size -= 0.01f;
+
+        size = std::clamp(size, 0.05f, 1.0f);
+
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
@@ -86,6 +110,9 @@ int main()
         texture2.bind(1);
 
         shader.use();
+        shader.setFloat("mixValue", mixValue);
+        shader.setFloat("size", size);
+        shader.setFloat("time", static_cast<float>(glfwGetTime()));
 
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
