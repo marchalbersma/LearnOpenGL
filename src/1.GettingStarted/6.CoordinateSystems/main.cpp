@@ -21,40 +21,170 @@ int main()
     Glad::init();
 
     const Vertex vertices[] {
+        // Front
         Vertex {
-            .position = vec3(-0.5f, 0.5f, 0.0f),
+            .position = vec3(-0.5f, 0.5f, 0.5f),
             .textureCoordinates = vec2(0.0f, 1.0f)
         },
         Vertex {
-            .position = vec3(0.5f, 0.5f, 0.0f),
+            .position = vec3(0.5f, 0.5f, 0.5f),
             .textureCoordinates = vec2(1.0f, 1.0f)
         },
         Vertex {
-            .position = vec3(0.5f, -0.5f, 0.0f),
+            .position = vec3(0.5f, -0.5f, 0.5f),
             .textureCoordinates = vec2(1.0f, 0.0f)
         },
         Vertex {
-            .position = vec3(-0.5f, -0.5f, 0.0f),
+            .position = vec3(-0.5f, 0.5f, 0.5f),
+            .textureCoordinates = vec2(0.0f, 1.0f)
+        },
+        Vertex {
+            .position = vec3(0.5f, -0.5f, 0.5f),
+            .textureCoordinates = vec2(1.0f, 0.0f)
+        },
+        Vertex {
+            .position = vec3(-0.5f, -0.5f, 0.5f),
             .textureCoordinates = vec2(0.0f, 0.0f)
-        }
+        },
+
+        // Back
+        Vertex {
+            .position = vec3(-0.5f, 0.5f, -0.5f),
+            .textureCoordinates = vec2(0.0f, 1.0f)
+        },
+        Vertex {
+            .position = vec3(0.5f, 0.5f, -0.5f),
+            .textureCoordinates = vec2(1.0f, 1.0f)
+        },
+        Vertex {
+            .position = vec3(0.5f, -0.5f, -0.5f),
+            .textureCoordinates = vec2(1.0f, 0.0f)
+        },
+        Vertex {
+            .position = vec3(-0.5f, 0.5f, -0.5f),
+            .textureCoordinates = vec2(0.0f, 1.0f)
+        },
+        Vertex {
+            .position = vec3(0.5f, -0.5f, -0.5f),
+            .textureCoordinates = vec2(1.0f, 0.0f)
+        },
+        Vertex {
+            .position = vec3(-0.5f, -0.5f, -0.5f),
+            .textureCoordinates = vec2(0.0f, 0.0f)
+        },
+
+        // Top
+        Vertex {
+                .position = vec3(-0.5f, 0.5f, 0.5f),
+                .textureCoordinates = vec2(0.0f, 0.0f)
+        },
+        Vertex {
+                .position = vec3(0.5f, 0.5f, 0.5f),
+                .textureCoordinates = vec2(1.0f, 0.0f)
+        },
+        Vertex {
+                .position = vec3(-0.5f, 0.5f, -0.5f),
+                .textureCoordinates = vec2(0.0f, 1.0f)
+        },
+        Vertex {
+                .position = vec3(0.5f, 0.5f, 0.5f),
+                .textureCoordinates = vec2(1.0f, 0.0f)
+        },
+        Vertex {
+                .position = vec3(-0.5f, 0.5f, -0.5f),
+                .textureCoordinates = vec2(0.0f, 1.0f)
+        },
+        Vertex {
+                .position = vec3(0.5f, 0.5f, -0.5f),
+                .textureCoordinates = vec2(1.0f, 1.0f)
+        },
+
+        // Bottom
+        Vertex {
+            .position = vec3(-0.5f, -0.5f, 0.5f),
+            .textureCoordinates = vec2(0.0f, 0.0f)
+        },
+        Vertex {
+            .position = vec3(0.5f, -0.5f, 0.5f),
+            .textureCoordinates = vec2(1.0f, 0.0f)
+        },
+        Vertex {
+            .position = vec3(-0.5f, -0.5f, -0.5f),
+            .textureCoordinates = vec2(0.0f, 1.0f)
+        },
+        Vertex {
+            .position = vec3(0.5f, -0.5f, 0.5f),
+            .textureCoordinates = vec2(1.0f, 0.0f)
+        },
+        Vertex {
+            .position = vec3(-0.5f, -0.5f, -0.5f),
+            .textureCoordinates = vec2(0.0f, 1.0f)
+        },
+        Vertex {
+            .position = vec3(0.5f, -0.5f, -0.5f),
+            .textureCoordinates = vec2(1.0f, 1.0f)
+        },
+
+        // Left
+        Vertex {
+            .position = vec3(-0.5f, 0.5f, 0.5f),
+            .textureCoordinates = vec2(1.0f, 0.0f)
+        },
+        Vertex {
+            .position = vec3(-0.5f, -0.5f, 0.5f),
+            .textureCoordinates = vec2(0.0f, 0.0f)
+        },
+        Vertex {
+            .position = vec3(-0.5f, 0.5f, -0.5f),
+            .textureCoordinates = vec2(1.0f, 1.0f)
+        },
+        Vertex {
+            .position = vec3(-0.5f, -0.5f, 0.5f),
+            .textureCoordinates = vec2(0.0f, 0.0f)
+        },
+        Vertex {
+            .position = vec3(-0.5f, 0.5f, -0.5f),
+            .textureCoordinates = vec2(1.0f, 1.0f)
+        },
+        Vertex {
+            .position = vec3(-0.5f, -0.5f, -0.5f),
+            .textureCoordinates = vec2(0.0f, 1.0f)
+        },
+
+        // Right
+        Vertex {
+            .position = vec3(0.5f, 0.5f, 0.5f),
+            .textureCoordinates = vec2(1.0f, 0.0f)
+        },
+        Vertex {
+            .position = vec3(0.5f, -0.5f, 0.5f),
+            .textureCoordinates = vec2(0.0f, 0.0f)
+        },
+        Vertex {
+            .position = vec3(0.5f, 0.5f, -0.5f),
+            .textureCoordinates = vec2(1.0f, 1.0f)
+        },
+        Vertex {
+            .position = vec3(0.5f, -0.5f, 0.5f),
+            .textureCoordinates = vec2(0.0f, 0.0f)
+        },
+        Vertex {
+            .position = vec3(0.5f, 0.5f, -0.5f),
+            .textureCoordinates = vec2(1.0f, 1.0f)
+        },
+        Vertex {
+            .position = vec3(0.5f, -0.5f, -0.5f),
+            .textureCoordinates = vec2(0.0f, 1.0f)
+        },
     };
 
-    const unsigned int indices[] {
-        0, 1, 2,
-        0, 2, 3
-    };
-
-    unsigned int VBO, VAO, EBO;
+    unsigned int VBO, VAO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position.x));
     glEnableVertexAttribArray(0);
@@ -62,13 +192,14 @@ int main()
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, textureCoordinates.r));
     glEnableVertexAttribArray(1);
 
+    glEnable(GL_DEPTH_TEST);
+
     Texture texture1(GL_TEXTURE_2D, FileSystem::getResourcePath("textures/container.jpg").c_str());
     Texture texture2(GL_TEXTURE_2D, FileSystem::getResourcePath("textures/awesome-face.png").c_str());
 
-    mat4 model = mat4(1.0f), view = mat4(1.0f), projection;
+    mat4 view = mat4(1.0f), projection;
 
-    model = rotate(model, radians(-90.0f), vec3(1.0f, 0.0f, 0.0f));
-    view = translate(view, vec3(0.0f, -0.5f, -3.0f));
+    view = translate(view, vec3(0.0f, 0.0f, -3.0f));
     projection = perspective(
         radians(45.0f),
         (float)windowWidth / (float)windowHeight,
@@ -80,7 +211,6 @@ int main()
     shader.use();
 
     shader.registerUniform("model");
-    shader.setMat4("model", model);
 
     shader.registerUniform("view");
     shader.setMat4("view", view);
@@ -96,14 +226,18 @@ int main()
 
     GLFW::loop(window, [&]() {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         texture1.bind(0);
         texture2.bind(1);
 
+        mat4 model = mat4(1.0f);
+        model = rotate(model, (float)glfwGetTime(), vec3(1.0f, 0.5f, 0.25f));
+        shader.setMat4("model", model);
+
         shader.use();
 
         glBindVertexArray(VAO);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+        glDrawArrays(GL_TRIANGLES, 0, sizeof(vertices));
     });
 }
