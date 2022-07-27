@@ -40,7 +40,7 @@ void Shader::setFloat(const string& uniformName, float value) const
     glUniform1f(uniforms.at(uniformName), value);
 }
 
-void Shader::setInt(const std::string& uniformName, int value) const
+void Shader::setInt(const string& uniformName, int value) const
 {
     glUniform1i(uniforms.at(uniformName), value);
 }
