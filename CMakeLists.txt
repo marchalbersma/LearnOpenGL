@@ -39,6 +39,7 @@ set(1.GettingStarted
     3.Shaders
     4.Textures
     5.Transformations
+    6.CoordinateSystems
 )
 
 file(GLOB RESOURCES ${CMAKE_SOURCE_DIR}/resources/*/*.*)
