@@ -13,26 +13,28 @@ using namespace std;
 
 int main()
 {
+    const unsigned int windowWidth = 1280, windowHeight = 720;
+
     GLFW::init();
-    GLFWwindow* window = GLFW::createWindow(1280, 720);
+    GLFWwindow* window = GLFW::createWindow(windowWidth, windowHeight);
 
     Glad::init();
 
     const Vertex vertices[] {
         Vertex {
-            .position = vec3(-0.3f, 0.5f, 0.0f),
+            .position = vec3(-0.5f, 0.5f, 0.0f),
             .textureCoordinates = vec2(0.0f, 1.0f)
         },
         Vertex {
-            .position = vec3(0.3f, 0.5f, 0.0f),
+            .position = vec3(0.5f, 0.5f, 0.0f),
             .textureCoordinates = vec2(1.0f, 1.0f)
         },
         Vertex {
-            .position = vec3(0.3f, -0.5f, 0.0f),
+            .position = vec3(0.5f, -0.5f, 0.0f),
             .textureCoordinates = vec2(1.0f, 0.0f)
         },
         Vertex {
-            .position = vec3(-0.3f, -0.5f, 0.0f),
+            .position = vec3(-0.5f, -0.5f, 0.0f),
             .textureCoordinates = vec2(0.0f, 0.0f)
         }
     };
@@ -63,8 +65,28 @@ int main()
     Texture texture1(GL_TEXTURE_2D, FileSystem::getResourcePath("textures/container.jpg").c_str());
     Texture texture2(GL_TEXTURE_2D, FileSystem::getResourcePath("textures/awesome-face.png").c_str());
 
+    mat4 model = mat4(1.0f), view = mat4(1.0f), projection;
+
+    model = rotate(model, radians(-90.0f), vec3(1.0f, 0.0f, 0.0f));
+    view = translate(view, vec3(0.0f, -0.5f, -3.0f));
+    projection = perspective(
+        radians(45.0f),
+        (float)windowWidth / (float)windowHeight,
+        0.1f,
+        100.0f
+    );
+
     Shader shader("shaders/shader.vert", "shaders/shader.frag");
     shader.use();
+
+    shader.registerUniform("model");
+    shader.setMat4("model", model);
+
+    shader.registerUniform("view");
+    shader.setMat4("view", view);
+
+    shader.registerUniform("projection");
+    shader.setMat4("projection", projection);
 
     shader.registerUniform("texture1");
     shader.setInt("texture1", 0);
