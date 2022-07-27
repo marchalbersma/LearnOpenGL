@@ -1,10 +1,12 @@
 #include <Shader.hpp>
 #include <fstream>
 #include <glad/glad.h>
+#include <glm/glm.hpp>
 #include <iostream>
 #include <sstream>
 #include <string>
 
+using namespace glm;
 using namespace std;
 
 Shader::Shader(const char* vertexPath, const char* fragmentPath)
@@ -41,6 +43,11 @@ void Shader::setFloat(const string& uniformName, float value) const
 void Shader::setInt(const std::string& uniformName, int value) const
 {
     glUniform1i(uniforms.at(uniformName), value);
+}
+
+void Shader::setMat4(const string& uniformName, const mat4& matrix) const
+{
+    glUniformMatrix4fv(uniforms.at(uniformName), 1, GL_FALSE, &matrix[0][0]);
 }
 
 string Shader::read(const char* path)

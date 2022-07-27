@@ -3,6 +3,7 @@
 
 #include <string>
 #include <unordered_map>
+#include <glm/glm.hpp>
 
 class Shader
 {
@@ -14,6 +15,7 @@ public:
     void registerUniform(const std::string& name);
     void setFloat(const std::string& uniformName, float value) const;
     void setInt(const std::string& uniformName, int value) const;
+    void setMat4(const std::string& uniformName, const glm::mat4& matrix) const;
 private:
     std::unordered_map<std::string, int> uniforms;
 

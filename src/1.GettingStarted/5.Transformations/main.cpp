@@ -3,6 +3,7 @@
 #include <Glad.hpp>
 #include <GLFW.hpp>
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <Shader.hpp>
 #include <Texture.hpp>
 #include <Vertex.hpp>
@@ -13,25 +14,25 @@ using namespace std;
 int main()
 {
     GLFW::init();
-    GLFWwindow* window = GLFW::createWindow(1280, 720);
+    GLFWwindow* window = GLFW::createWindow(720, 720);
 
     Glad::init();
 
     const Vertex vertices[] {
         Vertex {
-            .position = vec3(-0.3f, 0.5f, 0.0f),
+            .position = vec3(-0.5f, 0.5f, 0.0f),
             .textureCoordinates = vec2(0.0f, 1.0f)
         },
         Vertex {
-            .position = vec3(0.3f, 0.5f, 0.0f),
+            .position = vec3(0.5f, 0.5f, 0.0f),
             .textureCoordinates = vec2(1.0f, 1.0f)
         },
         Vertex {
-            .position = vec3(0.3f, -0.5f, 0.0f),
+            .position = vec3(0.5f, -0.5f, 0.0f),
             .textureCoordinates = vec2(1.0f, 0.0f)
         },
         Vertex {
-            .position = vec3(-0.3f, -0.5f, 0.0f),
+            .position = vec3(-0.5f, -0.5f, 0.0f),
             .textureCoordinates = vec2(0.0f, 0.0f)
         }
     };
@@ -65,6 +66,8 @@ int main()
     Shader shader("shaders/shader.vert", "shaders/shader.frag");
     shader.use();
 
+    shader.registerUniform("transform");
+
     shader.registerUniform("texture1");
     shader.setInt("texture1", 0);
 
@@ -72,6 +75,8 @@ int main()
     shader.setInt("texture2", 1);
 
     GLFW::loop(window, [&]() {
+        const auto time = static_cast<float>(glfwGetTime());
+
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
@@ -79,6 +84,16 @@ int main()
         texture2.bind(1);
 
         shader.use();
+
+        mat4 transform = mat4(1.0f);
+        transform = translate(transform, vec3(
+            sin(time) / 2,
+            cos(time) / 2,
+            0.0f
+        ));
+        transform = rotate(transform, time, vec3(0.0f, 0.0f, 1.0f));
+
+        shader.setMat4("transform", transform);
 
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
