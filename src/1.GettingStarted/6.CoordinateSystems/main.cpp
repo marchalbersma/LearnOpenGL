@@ -4,6 +4,7 @@
 #include <GLFW.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <random>
 #include <Shader.hpp>
 #include <Texture.hpp>
 #include <Vertex.hpp>
@@ -224,6 +225,30 @@ int main()
     shader.registerUniform("texture2");
     shader.setInt("texture2", 1);
 
+    random_device randomDevice;
+    mt19937 randomGenerator(randomDevice());
+
+    uniform_real_distribution<float> xDistribution(-3.0f, 3.0f);
+    uniform_real_distribution<float> yDistribution(-1.5f, 1.5f);
+    uniform_real_distribution<float> zDistribution(-12.0f, 0.0f);
+    uniform_real_distribution<float> rotationDistribution(0.0f, 1.0f);
+
+    vec3 positions[10], rotations[10];
+    for (unsigned int i = 0; i < 10; i++)
+    {
+        positions[i] = vec3(
+            xDistribution(randomGenerator),
+            yDistribution(randomGenerator),
+            zDistribution(randomGenerator)
+        );
+
+        rotations[i] = vec3(
+            rotationDistribution(randomGenerator),
+            rotationDistribution(randomGenerator),
+            rotationDistribution(randomGenerator)
+        );
+    }
+
     GLFW::loop(window, [&]() {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -231,13 +256,18 @@ int main()
         texture1.bind(0);
         texture2.bind(1);
 
-        mat4 model = mat4(1.0f);
-        model = rotate(model, (float)glfwGetTime(), vec3(1.0f, 0.5f, 0.25f));
-        shader.setMat4("model", model);
-
         shader.use();
 
         glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, sizeof(vertices));
+
+        for (unsigned int i = 0; i < 10; i++)
+        {
+            mat4 model = mat4(1.0f);
+            model = translate(model, positions[i]);
+            model = rotate(model, (float)glfwGetTime(), rotations[i]);
+            shader.setMat4("model", model);
+
+            glDrawArrays(GL_TRIANGLES, 0, sizeof(vertices));
+        }
     });
 }
