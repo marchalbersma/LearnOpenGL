@@ -40,6 +40,7 @@ set(1.GettingStarted
     4.Textures
     5.Transformations
     6.CoordinateSystems
+    7.Camera
 )
 
 file(GLOB RESOURCES ${CMAKE_SOURCE_DIR}/resources/*/*.*)
