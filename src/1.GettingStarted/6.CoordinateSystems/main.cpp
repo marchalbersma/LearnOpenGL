@@ -76,28 +76,28 @@ int main()
 
         // Top
         Vertex {
-                .position = vec3(-0.5f, 0.5f, 0.5f),
-                .textureCoordinates = vec2(0.0f, 0.0f)
+            .position = vec3(-0.5f, 0.5f, 0.5f),
+            .textureCoordinates = vec2(0.0f, 0.0f)
         },
         Vertex {
-                .position = vec3(0.5f, 0.5f, 0.5f),
-                .textureCoordinates = vec2(1.0f, 0.0f)
+            .position = vec3(0.5f, 0.5f, 0.5f),
+            .textureCoordinates = vec2(1.0f, 0.0f)
         },
         Vertex {
-                .position = vec3(-0.5f, 0.5f, -0.5f),
-                .textureCoordinates = vec2(0.0f, 1.0f)
+            .position = vec3(-0.5f, 0.5f, -0.5f),
+            .textureCoordinates = vec2(0.0f, 1.0f)
         },
         Vertex {
-                .position = vec3(0.5f, 0.5f, 0.5f),
-                .textureCoordinates = vec2(1.0f, 0.0f)
+            .position = vec3(0.5f, 0.5f, 0.5f),
+            .textureCoordinates = vec2(1.0f, 0.0f)
         },
         Vertex {
-                .position = vec3(-0.5f, 0.5f, -0.5f),
-                .textureCoordinates = vec2(0.0f, 1.0f)
+            .position = vec3(-0.5f, 0.5f, -0.5f),
+            .textureCoordinates = vec2(0.0f, 1.0f)
         },
         Vertex {
-                .position = vec3(0.5f, 0.5f, -0.5f),
-                .textureCoordinates = vec2(1.0f, 1.0f)
+            .position = vec3(0.5f, 0.5f, -0.5f),
+            .textureCoordinates = vec2(1.0f, 1.0f)
         },
 
         // Bottom
