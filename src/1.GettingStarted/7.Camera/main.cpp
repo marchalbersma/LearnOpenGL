@@ -198,10 +198,7 @@ int main()
     Texture texture1(GL_TEXTURE_2D, FileSystem::getResourcePath("textures/container.jpg").c_str());
     Texture texture2(GL_TEXTURE_2D, FileSystem::getResourcePath("textures/awesome-face.png").c_str());
 
-    mat4 view = mat4(1.0f), projection;
-
-    view = translate(view, vec3(0.0f, 0.0f, -3.0f));
-    projection = perspective(
+    const mat4 projection = perspective(
         radians(45.0f),
         (float)windowWidth / (float)windowHeight,
         0.1f,
@@ -212,9 +209,7 @@ int main()
     shader.use();
 
     shader.registerUniform("model");
-
     shader.registerUniform("view");
-    shader.setMat4("view", view);
 
     shader.registerUniform("projection");
     shader.setMat4("projection", projection);
@@ -228,9 +223,9 @@ int main()
     random_device randomDevice;
     mt19937 randomGenerator(randomDevice());
 
-    uniform_real_distribution<float> xDistribution(-3.0f, 3.0f);
-    uniform_real_distribution<float> yDistribution(-1.5f, 1.5f);
-    uniform_real_distribution<float> zDistribution(-12.0f, 0.0f);
+    uniform_real_distribution<float> xDistribution(-5.0f, 5.0f);
+    uniform_real_distribution<float> yDistribution(-2.5f, 2.5f);
+    uniform_real_distribution<float> zDistribution(-5.0f, 5.0f);
     uniform_real_distribution<float> rotationDistribution(0.0f, 1.0f);
 
     vec3 positions[10], rotations[10];
@@ -250,6 +245,8 @@ int main()
     }
 
     GLFW::loop(window, [&]() {
+        const auto time = static_cast<float>(glfwGetTime());
+
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -259,6 +256,20 @@ int main()
         shader.use();
 
         glBindVertexArray(VAO);
+
+        mat4 view = mat4(1.0f);
+        const float cameraMovementRadius = 10.0f;
+
+        const auto cameraX = sin(time) * cameraMovementRadius;
+        const auto cameraZ = cos(time) * cameraMovementRadius;
+
+        view = lookAt(
+            vec3(cameraX, 0.0f, cameraZ),
+            vec3(0.0f, 0.0f, 0.0f),
+            vec3(0.0f, 1.0f, 0.0f)
+        );
+
+        shader.setMat4("view", view);
 
         for (unsigned int i = 0; i < 10; i++)
         {
