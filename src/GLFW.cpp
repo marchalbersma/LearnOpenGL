@@ -57,3 +57,27 @@ void GLFW::loop(GLFWwindow* window, const function<void()>& callback)
 
     glfwTerminate();
 }
+
+void GLFW::loop(GLFWwindow* window, const function<void(float deltaTime)>& callback)
+{
+    float lastFrameTime = 0.0f;
+
+    while (!glfwWindowShouldClose(window))
+    {
+        auto currentFrameTime = static_cast<float>(glfwGetTime());
+        float deltaTime = currentFrameTime - lastFrameTime;
+        lastFrameTime = currentFrameTime;
+
+        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        {
+            glfwSetWindowShouldClose(window, true);
+        }
+
+        callback(deltaTime);
+
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+    }
+
+    glfwTerminate();
+}

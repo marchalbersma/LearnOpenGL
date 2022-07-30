@@ -1,9 +1,11 @@
+#include <Camera.hpp>
 #include <FileSystem.hpp>
 #include <glad/glad.h>
 #include <Glad.hpp>
 #include <GLFW.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <optional>
 #include <random>
 #include <Shader.hpp>
 #include <Texture.hpp>
@@ -12,12 +14,22 @@
 using namespace glm;
 using namespace std;
 
+void processKeyboardInput(GLFWwindow* window, float deltaTime);
+void processMouseMovement([[maybe_unused]] GLFWwindow* window, double x, double y);
+void processMouseScroll([[maybe_unused]] GLFWwindow* window, [[maybe_unused]] double x, double y);
+
+Camera camera;
+optional<float> lastPositionX;
+optional<float> lastPositionY;
+
 int main()
 {
     const unsigned int windowWidth = 1280, windowHeight = 720;
 
     GLFW::init();
     GLFWwindow* window = GLFW::createWindow(windowWidth, windowHeight);
+    glfwSetCursorPosCallback(window, processMouseMovement);
+    glfwSetScrollCallback(window, processMouseScroll);
 
     Glad::init();
 
@@ -198,21 +210,12 @@ int main()
     Texture texture1(GL_TEXTURE_2D, FileSystem::getResourcePath("textures/container.jpg").c_str());
     Texture texture2(GL_TEXTURE_2D, FileSystem::getResourcePath("textures/awesome-face.png").c_str());
 
-    const mat4 projection = perspective(
-        radians(45.0f),
-        (float)windowWidth / (float)windowHeight,
-        0.1f,
-        100.0f
-    );
-
     Shader shader("shaders/shader.vert", "shaders/shader.frag");
     shader.use();
 
     shader.registerUniform("model");
     shader.registerUniform("view");
-
     shader.registerUniform("projection");
-    shader.setMat4("projection", projection);
 
     shader.registerUniform("texture1");
     shader.setInt("texture1", 0);
@@ -244,8 +247,8 @@ int main()
         );
     }
 
-    GLFW::loop(window, [&]() {
-        const auto time = static_cast<float>(glfwGetTime());
+    GLFW::loop(window, [&](float deltaTime) {
+        processKeyboardInput(window, deltaTime);
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -257,19 +260,15 @@ int main()
 
         glBindVertexArray(VAO);
 
-        mat4 view = mat4(1.0f);
-        const float cameraMovementRadius = 10.0f;
-
-        const auto cameraX = sin(time) * cameraMovementRadius;
-        const auto cameraZ = cos(time) * cameraMovementRadius;
-
-        view = lookAt(
-            vec3(cameraX, 0.0f, cameraZ),
-            vec3(0.0f, 0.0f, 0.0f),
-            vec3(0.0f, 1.0f, 0.0f)
+        const mat4 projection = perspective(
+                radians(camera.zoom),
+                (float)windowWidth / (float)windowHeight,
+                0.1f,
+                100.0f
         );
 
-        shader.setMat4("view", view);
+        shader.setMat4("projection", projection);
+        shader.setMat4("view", camera.getViewMatrix());
 
         for (unsigned int i = 0; i < 10; i++)
         {
@@ -281,4 +280,44 @@ int main()
             glDrawArrays(GL_TRIANGLES, 0, sizeof(vertices));
         }
     });
+}
+
+void processKeyboardInput(GLFWwindow* window, float deltaTime)
+{
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        camera.processKeyboard(Camera::Movement::FORWARD, deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        camera.processKeyboard(Camera::Movement::BACKWARD, deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        camera.processKeyboard(Camera::Movement::LEFT, deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        camera.processKeyboard(Camera::Movement::RIGHT, deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+        camera.processKeyboard(Camera::Movement::UP, deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+        camera.processKeyboard(Camera::Movement::DOWN, deltaTime);
+}
+
+void processMouseMovement([[maybe_unused]] GLFWwindow* window, double x, double y)
+{
+    auto positionX = static_cast<float>(x), positionY = static_cast<float>(y);
+
+    if (!lastPositionX.has_value() || !lastPositionY.has_value())
+    {
+        lastPositionX = positionX;
+        lastPositionY = positionY;
+    }
+
+    float offsetX = positionX - lastPositionX.value();
+    float offsetY = lastPositionY.value() - positionY;
+
+    lastPositionX = positionX;
+    lastPositionY = positionY;
+
+    camera.processMouseMovement(offsetX, offsetY);
+}
+
+void processMouseScroll([[maybe_unused]] GLFWwindow* window, [[maybe_unused]] double x, double y)
+{
+    camera.processMouseScroll(static_cast<float>(y));
 }

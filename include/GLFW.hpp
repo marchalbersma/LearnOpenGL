@@ -12,6 +12,7 @@ namespace GLFW
     void init();
     GLFWwindow* createWindow(int width, int height);
     void loop(GLFWwindow* window, const std::function<void()>& callback);
+    void loop(GLFWwindow* window, const std::function<void(float deltaTime)>& callback);
 }
 
 #endif

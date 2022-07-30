@@ -20,6 +20,7 @@ link_libraries(
 )
 
 set(SRC_FILES
+    Camera.cpp
     FileSystem.cpp
     Glad.cpp
     GLFW.cpp
