@@ -34,52 +34,160 @@ int main()
 
     const Vertex vertices[] {
         // Front
-        Vertex { .position = vec3(-0.5f, 0.5f, 0.5f) },
-        Vertex { .position = vec3(0.5f, 0.5f, 0.5f) },
-        Vertex { .position = vec3(0.5f, -0.5f, 0.5f) },
-        Vertex { .position = vec3(-0.5f, 0.5f, 0.5f) },
-        Vertex { .position = vec3(0.5f, -0.5f, 0.5f) },
-        Vertex { .position = vec3(-0.5f, -0.5f, 0.5f) },
+        Vertex {
+            .position = vec3(-0.5f, 0.5f, 0.5f),
+            .normal = vec3(0.0f, 0.0f, 1.0f)
+        },
+        Vertex {
+            .position = vec3(0.5f, 0.5f, 0.5f),
+            .normal = vec3(0.0f, 0.0f, 1.0f)
+        },
+        Vertex {
+            .position = vec3(0.5f, -0.5f, 0.5f),
+            .normal = vec3(0.0f, 0.0f, 1.0f)
+        },
+        Vertex {
+            .position = vec3(-0.5f, 0.5f, 0.5f),
+            .normal = vec3(0.0f, 0.0f, 1.0f)
+        },
+        Vertex {
+            .position = vec3(0.5f, -0.5f, 0.5f),
+            .normal = vec3(0.0f, 0.0f, 1.0f)
+        },
+        Vertex {
+            .position = vec3(-0.5f, -0.5f, 0.5f),
+            .normal = vec3(0.0f, 0.0f, 1.0f)
+        },
 
         // Back
-        Vertex { .position = vec3(-0.5f, 0.5f, -0.5f) },
-        Vertex { .position = vec3(0.5f, 0.5f, -0.5f) },
-        Vertex { .position = vec3(0.5f, -0.5f, -0.5f) },
-        Vertex { .position = vec3(-0.5f, 0.5f, -0.5f) },
-        Vertex { .position = vec3(0.5f, -0.5f, -0.5f) },
-        Vertex { .position = vec3(-0.5f, -0.5f, -0.5f) },
+        Vertex {
+            .position = vec3(-0.5f, 0.5f, -0.5f),
+            .normal = vec3(0.0f, 0.0f, -1.0f)
+        },
+        Vertex {
+            .position = vec3(0.5f, 0.5f, -0.5f),
+            .normal = vec3(0.0f, 0.0f, -1.0f)
+        },
+        Vertex {
+            .position = vec3(0.5f, -0.5f, -0.5f),
+            .normal = vec3(0.0f, 0.0f, -1.0f)
+        },
+        Vertex {
+            .position = vec3(-0.5f, 0.5f, -0.5f),
+            .normal = vec3(0.0f, 0.0f, -1.0f)
+        },
+        Vertex {
+            .position = vec3(0.5f, -0.5f, -0.5f),
+            .normal = vec3(0.0f, 0.0f, -1.0f)
+        },
+        Vertex {
+            .position = vec3(-0.5f, -0.5f, -0.5f),
+            .normal = vec3(0.0f, 0.0f, -1.0f)
+        },
 
         // Top
-        Vertex { .position = vec3(-0.5f, 0.5f, 0.5f) },
-        Vertex { .position = vec3(0.5f, 0.5f, 0.5f) },
-        Vertex { .position = vec3(-0.5f, 0.5f, -0.5f) },
-        Vertex { .position = vec3(0.5f, 0.5f, 0.5f) },
-        Vertex { .position = vec3(-0.5f, 0.5f, -0.5f) },
-        Vertex { .position = vec3(0.5f, 0.5f, -0.5f) },
+        Vertex {
+            .position = vec3(-0.5f, 0.5f, 0.5f),
+            .normal = vec3(0.0f, 1.0f, 0.0f)
+        },
+        Vertex {
+            .position = vec3(0.5f, 0.5f, 0.5f),
+            .normal = vec3(0.0f, 1.0f, 0.0f)
+        },
+        Vertex {
+            .position = vec3(-0.5f, 0.5f, -0.5f),
+            .normal = vec3(0.0f, 1.0f, 0.0f)
+        },
+        Vertex {
+            .position = vec3(0.5f, 0.5f, 0.5f),
+            .normal = vec3(0.0f, 1.0f, 0.0f)
+        },
+        Vertex {
+            .position = vec3(-0.5f, 0.5f, -0.5f),
+            .normal = vec3(0.0f, 1.0f, 0.0f)
+        },
+        Vertex {
+            .position = vec3(0.5f, 0.5f, -0.5f),
+            .normal = vec3(0.0f, 1.0f, 0.0f)
+        },
 
         // Bottom
-        Vertex { .position = vec3(-0.5f, -0.5f, 0.5f) },
-        Vertex { .position = vec3(0.5f, -0.5f, 0.5f) },
-        Vertex { .position = vec3(-0.5f, -0.5f, -0.5f) },
-        Vertex { .position = vec3(0.5f, -0.5f, 0.5f) },
-        Vertex { .position = vec3(-0.5f, -0.5f, -0.5f) },
-        Vertex { .position = vec3(0.5f, -0.5f, -0.5f) },
+        Vertex {
+            .position = vec3(-0.5f, -0.5f, 0.5f),
+            .normal = vec3(0.0f, -1.0f, 0.0f)
+        },
+        Vertex {
+            .position = vec3(0.5f, -0.5f, 0.5f),
+            .normal = vec3(0.0f, -1.0f, 0.0f)
+        },
+        Vertex {
+            .position = vec3(-0.5f, -0.5f, -0.5f),
+            .normal = vec3(0.0f, -1.0f, 0.0f)
+        },
+        Vertex {
+            .position = vec3(0.5f, -0.5f, 0.5f),
+            .normal = vec3(0.0f, -1.0f, 0.0f)
+        },
+        Vertex {
+            .position = vec3(-0.5f, -0.5f, -0.5f),
+            .normal = vec3(0.0f, -1.0f, 0.0f)
+        },
+        Vertex {
+            .position = vec3(0.5f, -0.5f, -0.5f),
+            .normal = vec3(0.0f, -1.0f, 0.0f)
+        },
 
         // Left
-        Vertex { .position = vec3(-0.5f, 0.5f, 0.5f) },
-        Vertex { .position = vec3(-0.5f, -0.5f, 0.5f) },
-        Vertex { .position = vec3(-0.5f, 0.5f, -0.5f) },
-        Vertex { .position = vec3(-0.5f, -0.5f, 0.5f) },
-        Vertex { .position = vec3(-0.5f, 0.5f, -0.5f) },
-        Vertex { .position = vec3(-0.5f, -0.5f, -0.5f) },
+        Vertex {
+            .position = vec3(-0.5f, 0.5f, 0.5f),
+            .normal = vec3(-1.0f, 0.0f, 0.0f)
+        },
+        Vertex {
+            .position = vec3(-0.5f, -0.5f, 0.5f),
+            .normal = vec3(-1.0f, 0.0f, 0.0f)
+        },
+        Vertex {
+            .position = vec3(-0.5f, 0.5f, -0.5f),
+            .normal = vec3(-1.0f, 0.0f, 0.0f)
+        },
+        Vertex {
+            .position = vec3(-0.5f, -0.5f, 0.5f),
+            .normal = vec3(-1.0f, 0.0f, 0.0f)
+        },
+        Vertex {
+            .position = vec3(-0.5f, 0.5f, -0.5f),
+            .normal = vec3(-1.0f, 0.0f, 0.0f)
+        },
+        Vertex {
+            .position = vec3(-0.5f, -0.5f, -0.5f),
+            .normal = vec3(-1.0f, 0.0f, 0.0f)
+        },
 
         // Right
-        Vertex { .position = vec3(0.5f, 0.5f, 0.5f) },
-        Vertex { .position = vec3(0.5f, -0.5f, 0.5f) },
-        Vertex { .position = vec3(0.5f, 0.5f, -0.5f) },
-        Vertex { .position = vec3(0.5f, -0.5f, 0.5f) },
-        Vertex { .position = vec3(0.5f, 0.5f, -0.5f) },
-        Vertex { .position = vec3(0.5f, -0.5f, -0.5f) },
+        Vertex {
+            .position = vec3(0.5f, 0.5f, 0.5f),
+            .normal = vec3(1.0f, 0.0f, 0.0f)
+        },
+        Vertex {
+            .position = vec3(0.5f, -0.5f, 0.5f),
+            .normal = vec3(1.0f, 0.0f, 0.0f)
+        },
+        Vertex {
+            .position = vec3(0.5f, 0.5f, -0.5f),
+            .normal = vec3(1.0f, 0.0f, 0.0f)
+        },
+        Vertex {
+            .position = vec3(0.5f, -0.5f, 0.5f),
+            .normal = vec3(1.0f, 0.0f, 0.0f)
+        },
+        Vertex {
+            .position = vec3(0.5f, 0.5f, -0.5f),
+            .normal = vec3(1.0f, 0.0f, 0.0f)
+        },
+        Vertex {
+            .position = vec3(0.5f, -0.5f, -0.5f),
+            .normal = vec3(1.0f, 0.0f, 0.0f)
+        },
     };
 
     unsigned int VBO, cubeVAO;
@@ -93,6 +201,9 @@ int main()
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position.x));
     glEnableVertexAttribArray(0);
 
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal.x));
+    glEnableVertexAttribArray(1);
+
     unsigned int lightVAO;
     glGenVertexArrays(1, &lightVAO);
     glBindVertexArray(lightVAO);
@@ -104,6 +215,7 @@ int main()
 
     glEnable(GL_DEPTH_TEST);
 
+    vec3 lightPosition = vec3(1.2f, 1.0f, 2.0f);
     vec3 lightColor = vec3(1.0f, 1.0f, 1.0f);
     vec3 cubeColor = vec3(1.0f, 0.5f, 0.31f);
 
@@ -118,17 +230,20 @@ int main()
     cubeShader.registerUniform("view");
     cubeShader.registerUniform("projection");
 
-    cubeShader.registerUniform("cubeColor");
-    cubeShader.setVec3("cubeColor", cubeColor);
+    cubeShader.registerUniform("lightPosition");
+    cubeShader.setVec3("lightPosition", lightPosition);
 
     cubeShader.registerUniform("lightColor");
     cubeShader.setVec3("lightColor", lightColor);
+
+    cubeShader.registerUniform("cubeColor");
+    cubeShader.setVec3("cubeColor", cubeColor);
 
     Shader lightShader("shaders/light.vert", "shaders/light.frag");
     lightShader.use();
 
     mat4 lightModel = mat4(1.0f);
-    lightModel = translate(lightModel, vec3(1.2f, 1.0f, 2.0f));
+    lightModel = translate(lightModel, lightPosition);
     lightModel = scale(lightModel, vec3(0.2f));
 
     lightShader.registerUniform("model");
