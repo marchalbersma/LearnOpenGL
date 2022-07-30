@@ -230,14 +230,16 @@ int main()
     cubeShader.registerUniform("view");
     cubeShader.registerUniform("projection");
 
+    cubeShader.registerUniform("cameraPosition");
+
     cubeShader.registerUniform("lightPosition");
     cubeShader.setVec3("lightPosition", lightPosition);
 
-    cubeShader.registerUniform("lightColor");
-    cubeShader.setVec3("lightColor", lightColor);
-
     cubeShader.registerUniform("cubeColor");
     cubeShader.setVec3("cubeColor", cubeColor);
+
+    cubeShader.registerUniform("lightColor");
+    cubeShader.setVec3("lightColor", lightColor);
 
     Shader lightShader("shaders/light.vert", "shaders/light.frag");
     lightShader.use();
@@ -272,6 +274,7 @@ int main()
         cubeShader.use();
         cubeShader.setMat4("projection", projection);
         cubeShader.setMat4("view", view);
+        cubeShader.setVec3("cameraPosition", camera.position);
 
         glBindVertexArray(cubeVAO);
         glDrawArrays(GL_TRIANGLES, 0, sizeof(vertices) / sizeof(vertices[0]));
