@@ -48,6 +48,7 @@ set(1.GettingStarted
 set(2.Lighting
     1.Colors
     2.BasicLighting
+    3.Materials
 )
 
 file(GLOB RESOURCES ${CMAKE_SOURCE_DIR}/resources/*/*.*)
