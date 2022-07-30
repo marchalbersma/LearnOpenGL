@@ -31,6 +31,8 @@ int main()
     glfwSetCursorPosCallback(window, processMouseMovement);
     glfwSetScrollCallback(window, processMouseScroll);
 
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
     Glad::init();
 
     const Vertex vertices[] {
