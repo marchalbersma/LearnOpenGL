@@ -215,7 +215,6 @@ int main()
 
     glEnable(GL_DEPTH_TEST);
 
-    vec3 lightPosition = vec3(1.2f, 1.0f, 2.0f);
     vec3 lightColor = vec3(1.0f, 1.0f, 1.0f);
     vec3 cubeColor = vec3(1.0f, 0.5f, 0.31f);
 
@@ -231,9 +230,7 @@ int main()
     cubeShader.registerUniform("projection");
 
     cubeShader.registerUniform("cameraPosition");
-
     cubeShader.registerUniform("lightPosition");
-    cubeShader.setVec3("lightPosition", lightPosition);
 
     cubeShader.registerUniform("cubeColor");
     cubeShader.setVec3("cubeColor", cubeColor);
@@ -244,24 +241,26 @@ int main()
     Shader lightShader("shaders/light.vert", "shaders/light.frag");
     lightShader.use();
 
-    mat4 lightModel = mat4(1.0f);
-    lightModel = translate(lightModel, lightPosition);
-    lightModel = scale(lightModel, vec3(0.2f));
-
     lightShader.registerUniform("model");
-    lightShader.setMat4("model", lightModel);
-
     lightShader.registerUniform("view");
     lightShader.registerUniform("projection");
 
     lightShader.registerUniform("color");
     lightShader.setVec3("color", lightColor);
 
-    GLFW::loop(window, [&](float deltaTime) {
+    GLFW::loop(window, [&](float time, float deltaTime) {
         processKeyboardInput(window, deltaTime);
 
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        vec3 lightPosition = vec3(1.0f, 1.0f, 2.0f);
+        lightPosition.x = lightPosition.x + sin(time) * 2.0f;
+        lightPosition.y = sin(time / 2.0f) * lightPosition.y;
+
+        mat4 lightModel = mat4(1.0f);
+        lightModel = translate(lightModel, lightPosition);
+        lightModel = scale(lightModel, vec3(0.2f));
 
         const mat4 projection = perspective(
             radians(camera.zoom),
@@ -275,11 +274,13 @@ int main()
         cubeShader.setMat4("projection", projection);
         cubeShader.setMat4("view", view);
         cubeShader.setVec3("cameraPosition", camera.position);
+        cubeShader.setVec3("lightPosition", lightPosition);
 
         glBindVertexArray(cubeVAO);
         glDrawArrays(GL_TRIANGLES, 0, sizeof(vertices) / sizeof(vertices[0]));
 
         lightShader.use();
+        lightShader.setMat4("model", lightModel);
         lightShader.setMat4("projection", projection);
         lightShader.setMat4("view", view);
 
