@@ -82,10 +82,10 @@ int main()
         Vertex { .position = vec3(0.5f, -0.5f, -0.5f) },
     };
 
-    unsigned int VBO, VAO;
-    glGenVertexArrays(1, &VAO);
+    unsigned int VBO, cubeVAO;
+    glGenVertexArrays(1, &cubeVAO);
     glGenBuffers(1, &VBO);
-    glBindVertexArray(VAO);
+    glBindVertexArray(cubeVAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
@@ -93,40 +93,80 @@ int main()
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position.x));
     glEnableVertexAttribArray(0);
 
+    unsigned int lightVAO;
+    glGenVertexArrays(1, &lightVAO);
+    glBindVertexArray(lightVAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position.x));
+    glEnableVertexAttribArray(0);
+
     glEnable(GL_DEPTH_TEST);
 
-    Shader shader("shaders/shader.vert", "shaders/shader.frag");
-    shader.use();
+    vec3 lightColor = vec3(1.0f, 1.0f, 1.0f);
+    vec3 cubeColor = vec3(1.0f, 0.5f, 0.31f);
 
-    mat4 model = mat4(1.0f);
+    Shader cubeShader("shaders/cube.vert", "shaders/cube.frag");
+    cubeShader.use();
 
-    shader.registerUniform("model");
-    shader.setMat4("model", model);
+    mat4 cubeModel = mat4(1.0f);
 
-    shader.registerUniform("view");
-    shader.registerUniform("projection");
+    cubeShader.registerUniform("model");
+    cubeShader.setMat4("model", cubeModel);
+
+    cubeShader.registerUniform("view");
+    cubeShader.registerUniform("projection");
+
+    cubeShader.registerUniform("cubeColor");
+    cubeShader.setVec3("cubeColor", cubeColor);
+
+    cubeShader.registerUniform("lightColor");
+    cubeShader.setVec3("lightColor", lightColor);
+
+    Shader lightShader("shaders/light.vert", "shaders/light.frag");
+    lightShader.use();
+
+    mat4 lightModel = mat4(1.0f);
+    lightModel = translate(lightModel, vec3(1.2f, 1.0f, 2.0f));
+    lightModel = scale(lightModel, vec3(0.2f));
+
+    lightShader.registerUniform("model");
+    lightShader.setMat4("model", lightModel);
+
+    lightShader.registerUniform("view");
+    lightShader.registerUniform("projection");
+
+    lightShader.registerUniform("color");
+    lightShader.setVec3("color", lightColor);
 
     GLFW::loop(window, [&](float deltaTime) {
         processKeyboardInput(window, deltaTime);
 
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        shader.use();
-
-        glBindVertexArray(VAO);
-
         const mat4 projection = perspective(
-            radians(camera.zoom),
-            (float)windowWidth / (float)windowHeight,
-            0.1f,
-            100.0f
+                radians(camera.zoom),
+                (float)windowWidth / (float)windowHeight,
+                0.1f,
+                100.0f
         );
+        const mat4 view = camera.getViewMatrix();
 
-        shader.setMat4("projection", projection);
-        shader.setMat4("view", camera.getViewMatrix());
+        cubeShader.use();
+        cubeShader.setMat4("projection", projection);
+        cubeShader.setMat4("view", view);
 
-        glDrawArrays(GL_TRIANGLES, 0, sizeof(vertices));
+        glBindVertexArray(cubeVAO);
+        glDrawArrays(GL_TRIANGLES, 0, sizeof(vertices) / sizeof(vertices[0]));
+
+        lightShader.use();
+        lightShader.setMat4("projection", projection);
+        lightShader.setMat4("view", view);
+
+        glBindVertexArray(lightVAO);
+        glDrawArrays(GL_TRIANGLES, 0, sizeof(vertices) / sizeof(vertices[0]));
     });
 }
 

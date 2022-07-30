@@ -50,6 +50,11 @@ void Shader::setMat4(const string& uniformName, const mat4& matrix) const
     glUniformMatrix4fv(uniforms.at(uniformName), 1, GL_FALSE, &matrix[0][0]);
 }
 
+void Shader::setVec3(const std::string& uniformName, const glm::vec3& vector) const
+{
+    glUniform3fv(uniforms.at(uniformName), 1, &vector[0]);
+}
+
 string Shader::read(const char* path)
 {
     string code;

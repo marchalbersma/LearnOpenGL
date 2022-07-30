@@ -16,6 +16,7 @@ public:
     void setFloat(const std::string& uniformName, float value) const;
     void setInt(const std::string& uniformName, int value) const;
     void setMat4(const std::string& uniformName, const glm::mat4& matrix) const;
+    void setVec3(const std::string& uniformName, const glm::vec3& vector) const;
 private:
     std::unordered_map<std::string, int> uniforms;
 
