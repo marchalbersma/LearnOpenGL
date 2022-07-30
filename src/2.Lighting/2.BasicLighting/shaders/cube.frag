@@ -7,5 +7,6 @@ out vec4 fragmentColor;
 
 void main()
 {
-    fragmentColor = vec4(cubeColor * lightColor, 1.0f);
+    vec3 ambientColor = 0.1 * lightColor;
+    fragmentColor = vec4(cubeColor * ambientColor, 1.0f);
 }
