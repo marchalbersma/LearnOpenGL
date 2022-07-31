@@ -244,10 +244,6 @@ int main()
     cubeShader.registerUniform("light.diffuse");
     cubeShader.registerUniform("light.specular");
 
-    cubeShader.setVec3("light.ambient", lightColor * 0.2f);
-    cubeShader.setVec3("light.diffuse", lightColor * 0.5f);
-    cubeShader.setVec3("light.specular", lightColor);
-
     cubeShader.registerUniform("cameraPosition");
 
     Shader lightShader("shaders/light.vert", "shaders/light.frag");
@@ -258,13 +254,16 @@ int main()
     lightShader.registerUniform("projection");
 
     lightShader.registerUniform("color");
-    lightShader.setVec3("color", lightColor);
 
     GLFW::loop(window, [&](float time, float deltaTime) {
         processKeyboardInput(window, deltaTime);
 
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        lightColor.r = sin(time * 2.0f);
+        lightColor.g = sin(time * 0.7f);
+        lightColor.b = sin(time * 1.3f);
 
         vec3 lightPosition = vec3(1.0f, 1.0f, 2.0f);
         lightPosition.x = lightPosition.x + sin(time) * 2.0f;
@@ -285,7 +284,12 @@ int main()
         cubeShader.use();
         cubeShader.setMat4("projection", projection);
         cubeShader.setMat4("view", view);
+
         cubeShader.setVec3("light.position", lightPosition);
+        cubeShader.setVec3("light.ambient", lightColor * 0.2f);
+        cubeShader.setVec3("light.diffuse", lightColor * 0.5f);
+        cubeShader.setVec3("light.specular", lightColor);
+
         cubeShader.setVec3("cameraPosition", camera.position);
 
         glBindVertexArray(cubeVAO);
@@ -295,6 +299,8 @@ int main()
         lightShader.setMat4("model", lightModel);
         lightShader.setMat4("projection", projection);
         lightShader.setMat4("view", view);
+
+        lightShader.setVec3("color", lightColor);
 
         glBindVertexArray(lightVAO);
         glDrawArrays(GL_TRIANGLES, 0, sizeof(vertices) / sizeof(vertices[0]));
