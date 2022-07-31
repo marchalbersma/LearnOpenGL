@@ -229,14 +229,26 @@ int main()
     cubeShader.registerUniform("view");
     cubeShader.registerUniform("projection");
 
+    cubeShader.registerUniform("material.ambient");
+    cubeShader.registerUniform("material.diffuse");
+    cubeShader.registerUniform("material.specular");
+    cubeShader.registerUniform("material.shininess");
+
+    cubeShader.setVec3("material.ambient", vec3(1.0f, 0.5f, 0.31f));
+    cubeShader.setVec3("material.diffuse", vec3(1.0f, 0.5f, 0.31f));
+    cubeShader.setVec3("material.specular", vec3(0.5f, 0.5f, 0.5f));
+    cubeShader.setFloat("material.shininess", 32.0f);
+
+    cubeShader.registerUniform("light.position");
+    cubeShader.registerUniform("light.ambient");
+    cubeShader.registerUniform("light.diffuse");
+    cubeShader.registerUniform("light.specular");
+
+    cubeShader.setVec3("light.ambient", lightColor * 0.2f);
+    cubeShader.setVec3("light.diffuse", lightColor * 0.5f);
+    cubeShader.setVec3("light.specular", lightColor);
+
     cubeShader.registerUniform("cameraPosition");
-    cubeShader.registerUniform("lightPosition");
-
-    cubeShader.registerUniform("cubeColor");
-    cubeShader.setVec3("cubeColor", cubeColor);
-
-    cubeShader.registerUniform("lightColor");
-    cubeShader.setVec3("lightColor", lightColor);
 
     Shader lightShader("shaders/light.vert", "shaders/light.frag");
     lightShader.use();
@@ -273,8 +285,8 @@ int main()
         cubeShader.use();
         cubeShader.setMat4("projection", projection);
         cubeShader.setMat4("view", view);
+        cubeShader.setVec3("light.position", lightPosition);
         cubeShader.setVec3("cameraPosition", camera.position);
-        cubeShader.setVec3("lightPosition", lightPosition);
 
         glBindVertexArray(cubeVAO);
         glDrawArrays(GL_TRIANGLES, 0, sizeof(vertices) / sizeof(vertices[0]));
