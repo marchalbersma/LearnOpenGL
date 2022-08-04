@@ -246,6 +246,15 @@ int main()
     glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, textureCoordinates.x));
     glEnableVertexAttribArray(2);
 
+    unsigned int lightVAO;
+    glGenVertexArrays(1, &lightVAO);
+    glBindVertexArray(lightVAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position.x));
+    glEnableVertexAttribArray(0);
+
     glEnable(GL_DEPTH_TEST);
 
     Texture diffuse(GL_TEXTURE_2D, FileSystem::getResourcePath("textures/crate.png").c_str());
@@ -272,31 +281,45 @@ int main()
     cubeShader.setInt("material.specular", 1);
     cubeShader.setFloat("material.shininess", 32.0f);
 
-    cubeShader.registerUniform("light.position");
-    cubeShader.registerUniform("light.direction");
-    cubeShader.registerUniform("light.cutOff");
-    cubeShader.registerUniform("light.outerCutOff");
+    cubeShader.registerUniform("directionalLight.direction");
+    cubeShader.registerUniform("directionalLight.ambient");
+    cubeShader.registerUniform("directionalLight.diffuse");
+    cubeShader.registerUniform("directionalLight.specular");
 
-    cubeShader.setFloat("light.cutOff", cos(radians(12.5f)));
-    cubeShader.setFloat("light.outerCutOff", cos(radians(17.5f)));
+    for (unsigned int j = 0; j < 4; j++)
+    {
+        string number = to_string(j);
 
-    cubeShader.registerUniform("light.ambient");
-    cubeShader.registerUniform("light.diffuse");
-    cubeShader.registerUniform("light.specular");
+        cubeShader.registerUniform("pointLights[" + number + "].position");
+        cubeShader.registerUniform("pointLights[" + number + "].ambient");
+        cubeShader.registerUniform("pointLights[" + number + "].diffuse");
+        cubeShader.registerUniform("pointLights[" + number + "].specular");
+        cubeShader.registerUniform("pointLights[" + number + "].constant");
+        cubeShader.registerUniform("pointLights[" + number + "].linear");
+        cubeShader.registerUniform("pointLights[" + number + "].quadratic");
+    }
 
-    cubeShader.setVec3("light.ambient", lightColor * 0.2f);
-    cubeShader.setVec3("light.diffuse", lightColor * 0.5f);
-    cubeShader.setVec3("light.specular", lightColor);
-
-    cubeShader.registerUniform("light.constant");
-    cubeShader.registerUniform("light.linear");
-    cubeShader.registerUniform("light.quadratic");
-
-    cubeShader.setFloat("light.constant", 1.0f);
-    cubeShader.setFloat("light.linear", 0.09f);
-    cubeShader.setFloat("light.quadratic", 0.032f);
+    cubeShader.registerUniform("spotLight.position");
+    cubeShader.registerUniform("spotLight.direction");
+    cubeShader.registerUniform("spotLight.ambient");
+    cubeShader.registerUniform("spotLight.diffuse");
+    cubeShader.registerUniform("spotLight.specular");
+    cubeShader.registerUniform("spotLight.constant");
+    cubeShader.registerUniform("spotLight.linear");
+    cubeShader.registerUniform("spotLight.quadratic");
+    cubeShader.registerUniform("spotLight.cutOff");
+    cubeShader.registerUniform("spotLight.outerCutOff");
 
     cubeShader.registerUniform("cameraPosition");
+
+    Shader lightShader("shaders/light.vert", "shaders/light.frag");
+    lightShader.use();
+
+    lightShader.registerUniform("model");
+    lightShader.registerUniform("view");
+    lightShader.registerUniform("projection");
+
+    lightShader.registerUniform("color");
 
     random_device randomDevice;
     mt19937 randomGenerator(randomDevice());
@@ -306,21 +329,35 @@ int main()
     uniform_real_distribution<float> zDistribution(-12.0f, 0.0f);
     uniform_real_distribution<float> rotationDistribution(0.0f, 1.0f);
 
-    vec3 positions[10], rotations[10];
+    vec3 cubePositions[10], cubeRotations[10];
     for (unsigned int i = 0; i < 10; i++)
     {
-        positions[i] = vec3(
+        cubePositions[i] = vec3(
             xDistribution(randomGenerator),
             yDistribution(randomGenerator),
             zDistribution(randomGenerator)
         );
 
-        rotations[i] = vec3(
+        cubeRotations[i] = vec3(
             rotationDistribution(randomGenerator),
             rotationDistribution(randomGenerator),
             rotationDistribution(randomGenerator)
         );
     }
+
+    vec3 pointLightPositions[] = {
+        vec3( 0.7f,  0.2f,  2.0f),
+        vec3( 2.3f, -3.3f, -4.0f),
+        vec3(-4.0f,  2.0f, -12.0f),
+        vec3( 0.0f,  0.0f, -3.0f)
+    };
+
+    vec3 pointLightColors[] = {
+        vec3(1.0f, 0.0f, 0.0f),
+        vec3(0.0f, 1.0f, 0.0f),
+        vec3(0.0f, 0.0f, 1.0f),
+        vec3(1.0f, 1.0f, 0.0f)
+    };
 
     GLFW::loop(window, [&](float time, float deltaTime) {
         processKeyboardInput(window, deltaTime);
@@ -345,15 +382,59 @@ int main()
         cubeShader.setVec3("cameraPosition", camera.position);
 
         glBindVertexArray(cubeVAO);
-
         for (unsigned int i = 0; i < 10; i++)
         {
             mat4 model = mat4(1.0f);
-            model = translate(model, positions[i]);
-            model = rotate(model, time, rotations[i]);
+            model = translate(model, cubePositions[i]);
+            model = rotate(model, time, cubeRotations[i]);
+
             cubeShader.setMat4("model", model);
-            cubeShader.setVec3("light.position", camera.position);
-            cubeShader.setVec3("light.direction", camera.front);
+
+            cubeShader.setVec3("directionalLight.direction", vec3(-0.2f, -1.0f, -0.3f));
+            cubeShader.setVec3("directionalLight.ambient", lightColor * 0.05f);
+            cubeShader.setVec3("directionalLight.diffuse", lightColor * 0.4f);
+            cubeShader.setVec3("directionalLight.specular", lightColor * 0.5f);
+
+            for (unsigned int j = 0; j < 4; j++)
+            {
+                string number = to_string(j);
+
+                cubeShader.setVec3("pointLights[" + number + "].position", pointLightPositions[j]);
+                cubeShader.setVec3("pointLights[" + number + "].ambient", pointLightColors[j] * 0.05f);
+                cubeShader.setVec3("pointLights[" + number + "].diffuse", pointLightColors[j] * 0.8f);
+                cubeShader.setVec3("pointLights[" + number + "].specular", vec3(1.0f, 1.0f, 1.0f));
+                cubeShader.setFloat("pointLights[" + number + "].constant", 1.0f);
+                cubeShader.setFloat("pointLights[" + number + "].linear", 0.09f);
+                cubeShader.setFloat("pointLights[" + number + "].quadratic", 0.032f);
+            }
+
+            cubeShader.setVec3("spotLight.position", camera.position);
+            cubeShader.setVec3("spotLight.direction", camera.front);
+            cubeShader.setVec3("spotLight.ambient", vec3(0.0f, 0.0f, 0.0f));
+            cubeShader.setVec3("spotLight.diffuse", lightColor);
+            cubeShader.setVec3("spotLight.specular", lightColor);
+            cubeShader.setFloat("spotLight.constant", 1.0f);
+            cubeShader.setFloat("spotLight.linear", 0.09f);
+            cubeShader.setFloat("spotLight.quadratic", 0.032f);
+            cubeShader.setFloat("spotLight.cutOff", cos(radians(12.5f)));
+            cubeShader.setFloat("spotLight.outerCutOff", cos(radians(15.0f)));
+
+            glDrawArrays(GL_TRIANGLES, 0, sizeof(vertices) / sizeof(vertices[0]));
+        }
+
+        lightShader.use();
+        lightShader.setMat4("projection", projection);
+        lightShader.setMat4("view", view);
+
+        glBindVertexArray(lightVAO);
+        for (unsigned int i = 0; i < 4; i++)
+        {
+            mat4 model = mat4(1.0f);
+            model = glm::translate(model, pointLightPositions[i]);
+            model = glm::scale(model, vec3(0.2f));
+
+            lightShader.setMat4("model", model);
+            lightShader.setVec3("color", pointLightColors[i]);
 
             glDrawArrays(GL_TRIANGLES, 0, sizeof(vertices) / sizeof(vertices[0]));
         }
