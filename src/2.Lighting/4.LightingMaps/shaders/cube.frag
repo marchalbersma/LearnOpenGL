@@ -2,8 +2,7 @@
 
 struct Material
 {
-    vec3 ambient;
-    vec3 diffuse;
+    sampler2D diffuse;
     vec3 specular;
     float shininess;
 };
@@ -17,6 +16,7 @@ struct Light {
 
 in vec3 fragmentPosition;
 in vec3 fragmentNormal;
+in vec2 textureCoordinates;
 
 uniform Material material;
 uniform Light light;
@@ -27,7 +27,9 @@ out vec4 fragmentColor;
 
 void main()
 {
-    vec3 ambient = light.ambient * material.ambient;
+    vec3 diffuseTexel = vec3(texture(material.diffuse, textureCoordinates));
+
+    vec3 ambient = light.ambient * diffuseTexel;
 
     vec3 normal = normalize(fragmentNormal);
     vec3 lightDirection = normalize(light.position - fragmentPosition);
@@ -35,7 +37,7 @@ void main()
         light.diffuse *
         (
             max(dot(normal, lightDirection), 0.0) *
-            material.diffuse
+            diffuseTexel
         );
 
     vec3 cameraDirection = normalize(cameraPosition - fragmentPosition);

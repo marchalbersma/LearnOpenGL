@@ -1,4 +1,5 @@
 #include <Camera.hpp>
+#include <FileSystem.hpp>
 #include <glad/glad.h>
 #include <Glad.hpp>
 #include <GLFW.hpp>
@@ -6,6 +7,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <optional>
 #include <Shader.hpp>
+#include <Texture.hpp>
 #include <Vertex.hpp>
 
 using namespace glm;
@@ -36,157 +38,193 @@ int main()
         // Front
         Vertex {
             .position = vec3(-0.5f, 0.5f, 0.5f),
-            .normal = vec3(0.0f, 0.0f, 1.0f)
+            .normal = vec3(0.0f, 0.0f, 1.0f),
+            .textureCoordinates = vec2(0.0f, 1.0f)
         },
         Vertex {
             .position = vec3(0.5f, 0.5f, 0.5f),
-            .normal = vec3(0.0f, 0.0f, 1.0f)
+            .normal = vec3(0.0f, 0.0f, 1.0f),
+            .textureCoordinates = vec2(1.0f, 1.0f)
         },
         Vertex {
             .position = vec3(0.5f, -0.5f, 0.5f),
-            .normal = vec3(0.0f, 0.0f, 1.0f)
+            .normal = vec3(0.0f, 0.0f, 1.0f),
+            .textureCoordinates = vec2(1.0f, 0.0f)
         },
         Vertex {
             .position = vec3(-0.5f, 0.5f, 0.5f),
-            .normal = vec3(0.0f, 0.0f, 1.0f)
+            .normal = vec3(0.0f, 0.0f, 1.0f),
+            .textureCoordinates = vec2(0.0f, 1.0f)
         },
         Vertex {
             .position = vec3(0.5f, -0.5f, 0.5f),
-            .normal = vec3(0.0f, 0.0f, 1.0f)
+            .normal = vec3(0.0f, 0.0f, 1.0f),
+            .textureCoordinates = vec2(1.0f, 0.0f)
         },
         Vertex {
             .position = vec3(-0.5f, -0.5f, 0.5f),
-            .normal = vec3(0.0f, 0.0f, 1.0f)
+            .normal = vec3(0.0f, 0.0f, 1.0f),
+            .textureCoordinates = vec2(0.0f, 0.0f)
         },
 
         // Back
         Vertex {
             .position = vec3(-0.5f, 0.5f, -0.5f),
-            .normal = vec3(0.0f, 0.0f, -1.0f)
+            .normal = vec3(0.0f, 0.0f, -1.0f),
+            .textureCoordinates = vec2(0.0f, 1.0f)
         },
         Vertex {
             .position = vec3(0.5f, 0.5f, -0.5f),
-            .normal = vec3(0.0f, 0.0f, -1.0f)
+            .normal = vec3(0.0f, 0.0f, -1.0f),
+            .textureCoordinates = vec2(1.0f, 1.0f)
         },
         Vertex {
             .position = vec3(0.5f, -0.5f, -0.5f),
-            .normal = vec3(0.0f, 0.0f, -1.0f)
+            .normal = vec3(0.0f, 0.0f, -1.0f),
+            .textureCoordinates = vec2(1.0f, 0.0f)
         },
         Vertex {
             .position = vec3(-0.5f, 0.5f, -0.5f),
-            .normal = vec3(0.0f, 0.0f, -1.0f)
+            .normal = vec3(0.0f, 0.0f, -1.0f),
+            .textureCoordinates = vec2(0.0f, 1.0f)
         },
         Vertex {
             .position = vec3(0.5f, -0.5f, -0.5f),
-            .normal = vec3(0.0f, 0.0f, -1.0f)
+            .normal = vec3(0.0f, 0.0f, -1.0f),
+            .textureCoordinates = vec2(1.0f, 0.0f)
         },
         Vertex {
             .position = vec3(-0.5f, -0.5f, -0.5f),
-            .normal = vec3(0.0f, 0.0f, -1.0f)
+            .normal = vec3(0.0f, 0.0f, -1.0f),
+            .textureCoordinates = vec2(0.0f, 0.0f)
         },
 
         // Top
         Vertex {
             .position = vec3(-0.5f, 0.5f, 0.5f),
-            .normal = vec3(0.0f, 1.0f, 0.0f)
+            .normal = vec3(0.0f, 1.0f, 0.0f),
+            .textureCoordinates = vec2(0.0f, 0.0f)
         },
         Vertex {
             .position = vec3(0.5f, 0.5f, 0.5f),
-            .normal = vec3(0.0f, 1.0f, 0.0f)
+            .normal = vec3(0.0f, 1.0f, 0.0f),
+            .textureCoordinates = vec2(1.0f, 0.0f)
         },
         Vertex {
             .position = vec3(-0.5f, 0.5f, -0.5f),
-            .normal = vec3(0.0f, 1.0f, 0.0f)
+            .normal = vec3(0.0f, 1.0f, 0.0f),
+            .textureCoordinates = vec2(0.0f, 1.0f)
         },
         Vertex {
             .position = vec3(0.5f, 0.5f, 0.5f),
-            .normal = vec3(0.0f, 1.0f, 0.0f)
+            .normal = vec3(0.0f, 1.0f, 0.0f),
+            .textureCoordinates = vec2(1.0f, 0.0f)
         },
         Vertex {
             .position = vec3(-0.5f, 0.5f, -0.5f),
-            .normal = vec3(0.0f, 1.0f, 0.0f)
+            .normal = vec3(0.0f, 1.0f, 0.0f),
+            .textureCoordinates = vec2(0.0f, 1.0f)
         },
         Vertex {
             .position = vec3(0.5f, 0.5f, -0.5f),
-            .normal = vec3(0.0f, 1.0f, 0.0f)
+            .normal = vec3(0.0f, 1.0f, 0.0f),
+            .textureCoordinates = vec2(1.0f, 1.0f)
         },
 
         // Bottom
         Vertex {
             .position = vec3(-0.5f, -0.5f, 0.5f),
-            .normal = vec3(0.0f, -1.0f, 0.0f)
+            .normal = vec3(0.0f, -1.0f, 0.0f),
+            .textureCoordinates = vec2(0.0f, 0.0f)
         },
         Vertex {
             .position = vec3(0.5f, -0.5f, 0.5f),
-            .normal = vec3(0.0f, -1.0f, 0.0f)
+            .normal = vec3(0.0f, -1.0f, 0.0f),
+            .textureCoordinates = vec2(1.0f, 0.0f)
         },
         Vertex {
             .position = vec3(-0.5f, -0.5f, -0.5f),
-            .normal = vec3(0.0f, -1.0f, 0.0f)
+            .normal = vec3(0.0f, -1.0f, 0.0f),
+            .textureCoordinates = vec2(0.0f, 1.0f)
         },
         Vertex {
             .position = vec3(0.5f, -0.5f, 0.5f),
-            .normal = vec3(0.0f, -1.0f, 0.0f)
+            .normal = vec3(0.0f, -1.0f, 0.0f),
+            .textureCoordinates = vec2(1.0f, 0.0f)
         },
         Vertex {
             .position = vec3(-0.5f, -0.5f, -0.5f),
-            .normal = vec3(0.0f, -1.0f, 0.0f)
+            .normal = vec3(0.0f, -1.0f, 0.0f),
+            .textureCoordinates = vec2(0.0f, 1.0f)
         },
         Vertex {
             .position = vec3(0.5f, -0.5f, -0.5f),
-            .normal = vec3(0.0f, -1.0f, 0.0f)
+            .normal = vec3(0.0f, -1.0f, 0.0f),
+            .textureCoordinates = vec2(1.0f, 1.0f)
         },
 
         // Left
         Vertex {
             .position = vec3(-0.5f, 0.5f, 0.5f),
-            .normal = vec3(-1.0f, 0.0f, 0.0f)
+            .normal = vec3(-1.0f, 0.0f, 0.0f),
+            .textureCoordinates = vec2(1.0f, 1.0f)
         },
         Vertex {
             .position = vec3(-0.5f, -0.5f, 0.5f),
-            .normal = vec3(-1.0f, 0.0f, 0.0f)
+            .normal = vec3(-1.0f, 0.0f, 0.0f),
+            .textureCoordinates = vec2(1.0f, 0.0f)
         },
         Vertex {
             .position = vec3(-0.5f, 0.5f, -0.5f),
-            .normal = vec3(-1.0f, 0.0f, 0.0f)
+            .normal = vec3(-1.0f, 0.0f, 0.0f),
+            .textureCoordinates = vec2(0.0f, 1.0f)
         },
         Vertex {
             .position = vec3(-0.5f, -0.5f, 0.5f),
-            .normal = vec3(-1.0f, 0.0f, 0.0f)
+            .normal = vec3(-1.0f, 0.0f, 0.0f),
+            .textureCoordinates = vec2(1.0f, 0.0f)
         },
         Vertex {
             .position = vec3(-0.5f, 0.5f, -0.5f),
-            .normal = vec3(-1.0f, 0.0f, 0.0f)
+            .normal = vec3(-1.0f, 0.0f, 0.0f),
+            .textureCoordinates = vec2(0.0f, 1.0f)
         },
         Vertex {
             .position = vec3(-0.5f, -0.5f, -0.5f),
-            .normal = vec3(-1.0f, 0.0f, 0.0f)
+            .normal = vec3(-1.0f, 0.0f, 0.0f),
+            .textureCoordinates = vec2(0.0f, 0.0f)
         },
 
         // Right
         Vertex {
             .position = vec3(0.5f, 0.5f, 0.5f),
-            .normal = vec3(1.0f, 0.0f, 0.0f)
+            .normal = vec3(1.0f, 0.0f, 0.0f),
+            .textureCoordinates = vec2(1.0f, 1.0f)
         },
         Vertex {
             .position = vec3(0.5f, -0.5f, 0.5f),
-            .normal = vec3(1.0f, 0.0f, 0.0f)
+            .normal = vec3(1.0f, 0.0f, 0.0f),
+            .textureCoordinates = vec2(1.0f, 0.0f)
         },
         Vertex {
             .position = vec3(0.5f, 0.5f, -0.5f),
-            .normal = vec3(1.0f, 0.0f, 0.0f)
+            .normal = vec3(1.0f, 0.0f, 0.0f),
+            .textureCoordinates = vec2(0.0f, 1.0f)
         },
         Vertex {
             .position = vec3(0.5f, -0.5f, 0.5f),
-            .normal = vec3(1.0f, 0.0f, 0.0f)
+            .normal = vec3(1.0f, 0.0f, 0.0f),
+            .textureCoordinates = vec2(1.0f, 0.0f)
         },
         Vertex {
             .position = vec3(0.5f, 0.5f, -0.5f),
-            .normal = vec3(1.0f, 0.0f, 0.0f)
+            .normal = vec3(1.0f, 0.0f, 0.0f),
+            .textureCoordinates = vec2(0.0f, 1.0f)
         },
         Vertex {
             .position = vec3(0.5f, -0.5f, -0.5f),
-            .normal = vec3(1.0f, 0.0f, 0.0f)
+            .normal = vec3(1.0f, 0.0f, 0.0f),
+            .textureCoordinates = vec2(0.0f, 0.0f)
         },
     };
 
@@ -204,6 +242,9 @@ int main()
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal.x));
     glEnableVertexAttribArray(1);
 
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, textureCoordinates.x));
+    glEnableVertexAttribArray(2);
+
     unsigned int lightVAO;
     glGenVertexArrays(1, &lightVAO);
     glBindVertexArray(lightVAO);
@@ -214,6 +255,8 @@ int main()
     glEnableVertexAttribArray(0);
 
     glEnable(GL_DEPTH_TEST);
+
+    Texture diffuse(GL_TEXTURE_2D, FileSystem::getResourcePath("textures/crate.png").c_str());
 
     vec3 lightColor = vec3(1.0f, 1.0f, 1.0f);
 
@@ -228,13 +271,11 @@ int main()
     cubeShader.registerUniform("view");
     cubeShader.registerUniform("projection");
 
-    cubeShader.registerUniform("material.ambient");
     cubeShader.registerUniform("material.diffuse");
     cubeShader.registerUniform("material.specular");
     cubeShader.registerUniform("material.shininess");
 
-    cubeShader.setVec3("material.ambient", vec3(1.0f, 0.5f, 0.31f));
-    cubeShader.setVec3("material.diffuse", vec3(1.0f, 0.5f, 0.31f));
+    cubeShader.setInt("material.diffuse", 0);
     cubeShader.setVec3("material.specular", vec3(0.5f, 0.5f, 0.5f));
     cubeShader.setFloat("material.shininess", 32.0f);
 
@@ -264,6 +305,8 @@ int main()
 
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        diffuse.bind(0);
 
         vec3 lightPosition = vec3(1.0f, 1.0f, 2.0f);
         lightPosition.x = lightPosition.x + sin(time) * 2.0f;
