@@ -9,6 +9,7 @@
 #include <Shader.hpp>
 #include <Texture.hpp>
 #include <Vertex.hpp>
+#include <random>
 
 using namespace glm;
 using namespace std;
@@ -245,15 +246,6 @@ int main()
     glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, textureCoordinates.x));
     glEnableVertexAttribArray(2);
 
-    unsigned int lightVAO;
-    glGenVertexArrays(1, &lightVAO);
-    glBindVertexArray(lightVAO);
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position.x));
-    glEnableVertexAttribArray(0);
-
     glEnable(GL_DEPTH_TEST);
 
     Texture diffuse(GL_TEXTURE_2D, FileSystem::getResourcePath("textures/crate.png").c_str());
@@ -280,10 +272,11 @@ int main()
     cubeShader.setInt("material.specular", 1);
     cubeShader.setFloat("material.shininess", 32.0f);
 
-    cubeShader.registerUniform("light.position");
+    cubeShader.registerUniform("light.direction");
     cubeShader.registerUniform("light.ambient");
     cubeShader.registerUniform("light.diffuse");
     cubeShader.registerUniform("light.specular");
+
 
     cubeShader.setVec3("light.ambient", lightColor * 0.2f);
     cubeShader.setVec3("light.diffuse", lightColor * 0.5f);
@@ -291,15 +284,29 @@ int main()
 
     cubeShader.registerUniform("cameraPosition");
 
-    Shader lightShader("shaders/light.vert", "shaders/light.frag");
-    lightShader.use();
+    random_device randomDevice;
+    mt19937 randomGenerator(randomDevice());
 
-    lightShader.registerUniform("model");
-    lightShader.registerUniform("view");
-    lightShader.registerUniform("projection");
+    uniform_real_distribution<float> xDistribution(-3.0f, 3.0f);
+    uniform_real_distribution<float> yDistribution(-1.5f, 1.5f);
+    uniform_real_distribution<float> zDistribution(-12.0f, 0.0f);
+    uniform_real_distribution<float> rotationDistribution(0.0f, 1.0f);
 
-    lightShader.registerUniform("color");
-    lightShader.setVec3("color", lightColor);
+    vec3 positions[10], rotations[10];
+    for (unsigned int i = 0; i < 10; i++)
+    {
+        positions[i] = vec3(
+            xDistribution(randomGenerator),
+            yDistribution(randomGenerator),
+            zDistribution(randomGenerator)
+        );
+
+        rotations[i] = vec3(
+            rotationDistribution(randomGenerator),
+            rotationDistribution(randomGenerator),
+            rotationDistribution(randomGenerator)
+        );
+    }
 
     GLFW::loop(window, [&](float time, float deltaTime) {
         processKeyboardInput(window, deltaTime);
@@ -309,14 +316,6 @@ int main()
 
         diffuse.bind(0);
         specular.bind(1);
-
-        vec3 lightPosition = vec3(1.0f, 1.0f, 2.0f);
-        lightPosition.x = lightPosition.x + sin(time) * 2.0f;
-        lightPosition.y = sin(time / 2.0f) * lightPosition.y;
-
-        mat4 lightModel = mat4(1.0f);
-        lightModel = translate(lightModel, lightPosition);
-        lightModel = scale(lightModel, vec3(0.2f));
 
         const mat4 projection = perspective(
             radians(camera.zoom),
@@ -329,19 +328,20 @@ int main()
         cubeShader.use();
         cubeShader.setMat4("projection", projection);
         cubeShader.setMat4("view", view);
-        cubeShader.setVec3("light.position", lightPosition);
         cubeShader.setVec3("cameraPosition", camera.position);
 
         glBindVertexArray(cubeVAO);
-        glDrawArrays(GL_TRIANGLES, 0, sizeof(vertices) / sizeof(vertices[0]));
 
-        lightShader.use();
-        lightShader.setMat4("model", lightModel);
-        lightShader.setMat4("projection", projection);
-        lightShader.setMat4("view", view);
+        for (unsigned int i = 0; i < 10; i++)
+        {
+            mat4 model = mat4(1.0f);
+            model = translate(model, positions[i]);
+            model = rotate(model, time, rotations[i]);
+            cubeShader.setMat4("model", model);
+            cubeShader.setVec3("light.direction", vec3(-0.2f, -0.1f, -0.3f));
 
-        glBindVertexArray(lightVAO);
-        glDrawArrays(GL_TRIANGLES, 0, sizeof(vertices) / sizeof(vertices[0]));
+            glDrawArrays(GL_TRIANGLES, 0, sizeof(vertices) / sizeof(vertices[0]));
+        }
     });
 }
 

@@ -8,7 +8,7 @@ struct Material
 };
 
 struct Light {
-    vec3 position;
+    vec3 direction;
     vec3 ambient;
     vec3 diffuse;
     vec3 specular;
@@ -27,13 +27,13 @@ out vec4 fragmentColor;
 
 void main()
 {
-    vec3 diffuseTexel = vec3(texture(material.diffuse, textureCoordinates));
-    vec3 specularTexel = vec3(texture(material.specular, textureCoordinates));
+    vec3 diffuseTexel = texture(material.diffuse, textureCoordinates).rgb;
+    vec3 specularTexel = texture(material.specular, textureCoordinates).rgb;
 
     vec3 ambient = light.ambient * diffuseTexel;
 
     vec3 normal = normalize(fragmentNormal);
-    vec3 lightDirection = normalize(light.position - fragmentPosition);
+    vec3 lightDirection = normalize(-light.direction);
     vec3 diffuse =
         light.diffuse *
         (
