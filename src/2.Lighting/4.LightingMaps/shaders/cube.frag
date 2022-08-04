@@ -3,7 +3,7 @@
 struct Material
 {
     sampler2D diffuse;
-    vec3 specular;
+    sampler2D specular;
     float shininess;
 };
 
@@ -28,6 +28,7 @@ out vec4 fragmentColor;
 void main()
 {
     vec3 diffuseTexel = vec3(texture(material.diffuse, textureCoordinates));
+    vec3 specularTexel = vec3(texture(material.specular, textureCoordinates));
 
     vec3 ambient = light.ambient * diffuseTexel;
 
@@ -46,7 +47,7 @@ void main()
         light.specular *
         (
             pow(max(dot(cameraDirection, reflectDirection), 0.0), material.shininess) *
-            material.specular
+            specularTexel
         );
 
     fragmentColor = vec4(ambient + diffuse + specular, 1.0);

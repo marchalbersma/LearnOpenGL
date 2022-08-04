@@ -257,6 +257,7 @@ int main()
     glEnable(GL_DEPTH_TEST);
 
     Texture diffuse(GL_TEXTURE_2D, FileSystem::getResourcePath("textures/crate.png").c_str());
+    Texture specular(GL_TEXTURE_2D, FileSystem::getResourcePath("textures/crate-specular.png").c_str());
 
     vec3 lightColor = vec3(1.0f, 1.0f, 1.0f);
 
@@ -276,7 +277,7 @@ int main()
     cubeShader.registerUniform("material.shininess");
 
     cubeShader.setInt("material.diffuse", 0);
-    cubeShader.setVec3("material.specular", vec3(0.5f, 0.5f, 0.5f));
+    cubeShader.setInt("material.specular", 1);
     cubeShader.setFloat("material.shininess", 32.0f);
 
     cubeShader.registerUniform("light.position");
@@ -307,6 +308,7 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         diffuse.bind(0);
+        specular.bind(1);
 
         vec3 lightPosition = vec3(1.0f, 1.0f, 2.0f);
         lightPosition.x = lightPosition.x + sin(time) * 2.0f;
