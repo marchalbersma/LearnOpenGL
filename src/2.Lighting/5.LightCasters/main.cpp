@@ -246,6 +246,15 @@ int main()
     glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, textureCoordinates.x));
     glEnableVertexAttribArray(2);
 
+    unsigned int lightVAO;
+    glGenVertexArrays(1, &lightVAO);
+    glBindVertexArray(lightVAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position.x));
+    glEnableVertexAttribArray(0);
+
     glEnable(GL_DEPTH_TEST);
 
     Texture diffuse(GL_TEXTURE_2D, FileSystem::getResourcePath("textures/crate.png").c_str());
@@ -272,17 +281,34 @@ int main()
     cubeShader.setInt("material.specular", 1);
     cubeShader.setFloat("material.shininess", 32.0f);
 
-    cubeShader.registerUniform("light.direction");
+    cubeShader.registerUniform("light.position");
+
     cubeShader.registerUniform("light.ambient");
     cubeShader.registerUniform("light.diffuse");
     cubeShader.registerUniform("light.specular");
-
 
     cubeShader.setVec3("light.ambient", lightColor * 0.2f);
     cubeShader.setVec3("light.diffuse", lightColor * 0.5f);
     cubeShader.setVec3("light.specular", lightColor);
 
+    cubeShader.registerUniform("light.constant");
+    cubeShader.registerUniform("light.linear");
+    cubeShader.registerUniform("light.quadratic");
+
+    cubeShader.setFloat("light.constant", 1.0f);
+    cubeShader.setFloat("light.linear", 0.09f);
+    cubeShader.setFloat("light.quadratic", 0.032f);
+
     cubeShader.registerUniform("cameraPosition");
+
+    Shader lightShader("shaders/light.vert", "shaders/light.frag");
+    lightShader.use();
+
+    lightShader.registerUniform("model");
+    lightShader.registerUniform("view");
+    lightShader.registerUniform("projection");
+
+    lightShader.registerUniform("color");
 
     random_device randomDevice;
     mt19937 randomGenerator(randomDevice());
@@ -314,6 +340,14 @@ int main()
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        vec3 lightPosition = vec3(1.0f, 1.0f, 2.0f);
+        lightPosition.x = lightPosition.x + sin(time) * 2.0f;
+        lightPosition.y = sin(time / 2.0f) * lightPosition.y;
+
+        mat4 lightModel = mat4(1.0f);
+        lightModel = translate(lightModel, lightPosition);
+        lightModel = scale(lightModel, vec3(0.2f));
+
         diffuse.bind(0);
         specular.bind(1);
 
@@ -338,10 +372,20 @@ int main()
             model = translate(model, positions[i]);
             model = rotate(model, time, rotations[i]);
             cubeShader.setMat4("model", model);
-            cubeShader.setVec3("light.direction", vec3(-0.2f, -0.1f, -0.3f));
+            cubeShader.setVec3("light.position", lightPosition);
 
             glDrawArrays(GL_TRIANGLES, 0, sizeof(vertices) / sizeof(vertices[0]));
         }
+
+        lightShader.use();
+        lightShader.setMat4("model", lightModel);
+        lightShader.setMat4("projection", projection);
+        lightShader.setMat4("view", view);
+
+        lightShader.setVec3("color", lightColor);
+
+        glBindVertexArray(lightVAO);
+        glDrawArrays(GL_TRIANGLES, 0, sizeof(vertices) / sizeof(vertices[0]));
     });
 }
 
