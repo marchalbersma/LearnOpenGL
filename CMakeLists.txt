@@ -9,12 +9,16 @@ endif (MSVC)
 
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
+add_library(ASSIMP STATIC IMPORTED)
+set_property(TARGET ASSIMP APPEND PROPERTY IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/lib/assimp/assimp5.2.4.lib)
+
 add_library(GLAD ${CMAKE_SOURCE_DIR}/lib/glad/glad.c)
 
 add_library(GLFW STATIC IMPORTED)
 set_property(TARGET GLFW APPEND PROPERTY IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/lib/GLFW/glfw3.lib)
 
 link_libraries(
+    ASSIMP
     GLAD
     GLFW
 )
@@ -59,6 +63,7 @@ set(3.ModelLoading
     1.Model
 )
 
+file(GLOB DLLS ${CMAKE_SOURCE_DIR}/dll/*.dll)
 file(GLOB RESOURCES ${CMAKE_SOURCE_DIR}/resources/*/*.*)
 
 foreach (CHAPTER ${CHAPTERS})
@@ -85,6 +90,16 @@ foreach (CHAPTER ${CHAPTERS})
                 -E copy_if_different ${SHADER} $<TARGET_FILE_DIR:${SECTION_NAME}>/shaders/${SHADER_FILENAME}
             )
         endforeach (SHADER)
+
+        foreach (DLL ${DLLS})
+            get_filename_component(DLL_FILENAME ${DLL} NAME)
+
+            add_custom_command(
+                TARGET ${SECTION_NAME}
+                PRE_BUILD COMMAND ${CMAKE_COMMAND}
+                -E copy_if_different ${DLL} $<TARGET_FILE_DIR:${SECTION_NAME}>/dll/${DLL_FILENAME}
+            )
+        endforeach (DLL)
 
         foreach (RESOURCE ${RESOURCES})
             file(RELATIVE_PATH RESOURCE_PATH ${CMAKE_SOURCE_DIR} ${RESOURCE})
