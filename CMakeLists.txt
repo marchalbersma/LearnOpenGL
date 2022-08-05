@@ -33,6 +33,7 @@ list(TRANSFORM SRC_FILES PREPEND ${CMAKE_SOURCE_DIR}/src/)
 set(CHAPTERS
     1.GettingStarted
     2.Lighting
+    3.ModelLoading
 )
 
 set(1.GettingStarted
@@ -52,6 +53,10 @@ set(2.Lighting
     4.LightingMaps
     5.LightCasters
     6.MultipleLights
+)
+
+set(3.ModelLoading
+    1.Model
 )
 
 file(GLOB RESOURCES ${CMAKE_SOURCE_DIR}/resources/*/*.*)
