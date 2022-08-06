@@ -40,6 +40,7 @@ set(CHAPTERS
     1.GettingStarted
     2.Lighting
     3.ModelLoading
+    4.AdvancedOpenGL
 )
 
 set(1.GettingStarted
@@ -63,6 +64,10 @@ set(2.Lighting
 
 set(3.ModelLoading
     1.Model
+)
+
+set(4.AdvancedOpenGL
+    1.DepthTesting
 )
 
 file(GLOB DLLS ${CMAKE_SOURCE_DIR}/dll/*.dll)
