@@ -10,7 +10,7 @@ endif (MSVC)
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
 add_library(ASSIMP STATIC IMPORTED)
-set_property(TARGET ASSIMP APPEND PROPERTY IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/lib/assimp/assimp5.2.4.lib)
+set_property(TARGET ASSIMP APPEND PROPERTY IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/lib/assimp/assimp-vc143-mt.lib)
 
 add_library(GLAD ${CMAKE_SOURCE_DIR}/lib/glad/glad.c)
 
@@ -28,6 +28,8 @@ set(SRC_FILES
     FileSystem.cpp
     Glad.cpp
     GLFW.cpp
+    Mesh.cpp
+    Model.cpp
     Shader.cpp
     Texture.cpp
     Vertex.cpp
@@ -64,7 +66,7 @@ set(3.ModelLoading
 )
 
 file(GLOB DLLS ${CMAKE_SOURCE_DIR}/dll/*.dll)
-file(GLOB RESOURCES ${CMAKE_SOURCE_DIR}/resources/*/*.*)
+file(GLOB_RECURSE RESOURCES ${CMAKE_SOURCE_DIR}/resources/*.*)
 
 foreach (CHAPTER ${CHAPTERS})
     string(FIND ${CHAPTER} . PERIOD_POSITION)
@@ -97,7 +99,7 @@ foreach (CHAPTER ${CHAPTERS})
             add_custom_command(
                 TARGET ${SECTION_NAME}
                 PRE_BUILD COMMAND ${CMAKE_COMMAND}
-                -E copy_if_different ${DLL} $<TARGET_FILE_DIR:${SECTION_NAME}>/dll/${DLL_FILENAME}
+                -E copy_if_different ${DLL} $<TARGET_FILE_DIR:${SECTION_NAME}>
             )
         endforeach (DLL)
 

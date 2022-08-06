@@ -4,30 +4,34 @@
 #include <glad/glad.h>
 #include <iostream>
 #include <stb/stb_image.h>
+#include <string>
 
 using namespace std;
 
 // NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init): properties are initialized by reference
-Texture::Texture(const int type, const char* path)
+Texture::Texture(const int target, const char* path) : target(target), path(string(path))
 {
-    this->type = type;
-
     glGenTextures(1, &id);
-    glBindTexture(type, id);
+    glBindTexture(target, id);
 
-    glTexParameteri(type, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(type, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-    glTexParameteri(type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     loadFromFile(path);
+}
+
+Texture::Texture(int target, Type type, const char* path) : Texture(target, path)
+{
+    this->type = type;
 }
 
 void Texture::bind(const int unit) const
 {
     glActiveTexture(GL_TEXTURE0 + unit);
-    glBindTexture(type, id);
+    glBindTexture(target, id);
 }
 
 void Texture::loadFromFile(const char* path)
@@ -43,8 +47,8 @@ void Texture::loadFromFile(const char* path)
         exit(-1);
     }
 
-    glTexImage2D(type, 0, colors, width, height, 0, colors, GL_UNSIGNED_BYTE, image);
-    glGenerateMipmap(type);
+    glTexImage2D(target, 0, colors, width, height, 0, colors, GL_UNSIGNED_BYTE, image);
+    glGenerateMipmap(target);
 
     stbi_image_free(image);
 }
