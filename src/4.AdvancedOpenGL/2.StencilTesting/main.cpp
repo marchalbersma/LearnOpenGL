@@ -34,6 +34,9 @@ int main()
 
     glEnable(GL_DEPTH_TEST);
 
+    glEnable(GL_STENCIL_TEST);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
     const Vertex cubeVertices[] {
         // Front
         Vertex {
@@ -262,11 +265,17 @@ int main()
 
     shader.setInt("texture1", 0);
 
+    Shader outlineShader("shaders/shader.vert", "shaders/outline.frag");
+
+    outlineShader.registerUniform("model");
+    outlineShader.registerUniform("view");
+    outlineShader.registerUniform("projection");
+
     GLFW::loop(window, [&](float time, float deltaTime) {
         processKeyboardInput(window, deltaTime);
 
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
         mat4 model;
         const mat4 projection = perspective(
@@ -277,10 +286,24 @@ int main()
         );
         const mat4 view = camera.getViewMatrix();
 
-        shader.use();
+        outlineShader.use();
+        outlineShader.setMat4("view", view);
+        outlineShader.setMat4("projection", projection);
 
+        shader.use();
         shader.setMat4("view", view);
         shader.setMat4("projection", projection);
+
+        glStencilMask(0x00);
+
+        glBindVertexArray(planeVAO);
+        planeTexture.bind(0);
+
+        shader.setMat4("model", mat4(1.0f));
+        glDrawArrays(GL_TRIANGLES, 0, sizeof(planeVertices) / sizeof(planeVertices[0]));
+
+        glStencilFunc(GL_ALWAYS, 1, 0xFF);
+        glStencilMask(0xFF);
 
         glBindVertexArray(cubeVAO);
         cubeTexture.bind(0);
@@ -297,11 +320,31 @@ int main()
         shader.setMat4("model", model);
         glDrawArrays(GL_TRIANGLES, 0, sizeof(cubeVertices) / sizeof(cubeVertices[0]));
 
-        glBindVertexArray(planeVAO);
-        planeTexture.bind(0);
+        glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+        glStencilMask(0x00);
+        glDisable(GL_DEPTH_TEST);
 
-        shader.setMat4("model", mat4(1.0f));
-        glDrawArrays(GL_TRIANGLES, 0, sizeof(planeVertices) / sizeof(planeVertices[0]));
+        outlineShader.use();
+
+        float size = 1.1f;
+
+        model = mat4(1.0f);
+        model = translate(model, vec3(-1.0f, 0.0f, -1.0f));
+        model = scale(model, vec3(size));
+
+        outlineShader.setMat4("model", model);
+        glDrawArrays(GL_TRIANGLES, 0, sizeof(cubeVertices) / sizeof(cubeVertices[0]));
+
+        model = mat4(1.0f);
+        model = translate(model, vec3(2.0f, 0.0f, 0.0f));
+        model = scale(model, vec3(size));
+
+        outlineShader.setMat4("model", model);
+        glDrawArrays(GL_TRIANGLES, 0, sizeof(cubeVertices) / sizeof(cubeVertices[0]));
+
+        glStencilMask(0xFF);
+        glStencilFunc(GL_ALWAYS, 1, 0xFF);
+        glEnable(GL_DEPTH_TEST);
     });
 }
 
