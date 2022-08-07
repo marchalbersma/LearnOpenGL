@@ -70,6 +70,7 @@ set(4.AdvancedOpenGL
     1.DepthTesting
     2.StencilTesting
     3.Blending
+    4.FaceCulling
 )
 
 file(GLOB DLLS ${CMAKE_SOURCE_DIR}/dll/*.dll)
