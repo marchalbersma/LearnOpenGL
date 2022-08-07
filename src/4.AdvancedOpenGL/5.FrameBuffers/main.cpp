@@ -5,6 +5,7 @@
 #include <GLFW.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <iostream>
 #include <Model.hpp>
 #include <optional>
 #include <Shader.hpp>
@@ -31,8 +32,6 @@ int main()
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     Glad::init();
-
-    glEnable(GL_DEPTH_TEST);
 
     const Vertex cubeVertices[] {
         // Front
@@ -204,7 +203,7 @@ int main()
         Vertex {
             .position = vec3(-5.0f, -0.5f, -5.0f),
             .textureCoordinates = vec2(0.0f, 2.0f)
-    },
+        },
         Vertex {
             .position = vec3(5.0f, -0.5f, 5.0f),
             .textureCoordinates = vec2(2.0f, 0.0f)
@@ -217,6 +216,16 @@ int main()
             .position = vec3(5.0f, -0.5f, -5.0f),
             .textureCoordinates = vec2(2.0f, 2.0f)
         },
+    };
+
+    const float screenVertices[] = {
+        -1.0f,  1.0f,   0.0f, 1.0f,
+        -1.0f,  -1.0f,  0.0f, 0.0f,
+        1.0f,   -1.0f,  1.0f, 0.0f,
+
+        -1.0f,  1.0f,   0.0f, 1.0f,
+        1.0f,   -1.0f,  1.0f, 0.0f,
+        1.0f,   1.0f,   1.0f, 1.0f
     };
 
     unsigned int cubeVBO, cubeVAO;
@@ -247,6 +256,20 @@ int main()
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, textureCoordinates));
     glEnableVertexAttribArray(1);
 
+    unsigned int screenVBO, screenVAO;
+    glGenVertexArrays(1, &screenVAO);
+    glGenBuffers(1, &screenVBO);
+    glBindVertexArray(screenVAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, screenVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(screenVertices), screenVertices, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)nullptr);
+    glEnableVertexAttribArray(0);
+
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+
     Texture cubeTexture(GL_TEXTURE_2D, FileSystem::getResourcePath("textures/container.jpg").c_str());
     Texture planeTexture(GL_TEXTURE_2D, FileSystem::getResourcePath("textures/metal.png").c_str());
 
@@ -262,8 +285,45 @@ int main()
 
     shader.setInt("texture1", 0);
 
+    Shader screenShader("shaders/screen.vert", "shaders/screen.frag");
+
+    screenShader.registerUniform("screenTexture");
+    screenShader.use();
+    screenShader.setInt("screenTexture", 0);
+
+    unsigned int frameBuffer;
+    glGenFramebuffers(1, &frameBuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+
+    unsigned int textureColorBuffer;
+    glGenTextures(1, &textureColorBuffer);
+    glBindTexture(GL_TEXTURE_2D, textureColorBuffer);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, windowWidth, windowHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorBuffer, 0);
+
+    unsigned int RBO;
+    glGenRenderbuffers(1, &RBO);
+    glBindRenderbuffer(GL_RENDERBUFFER, RBO);
+
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, windowWidth, windowHeight);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, RBO);
+
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+    {
+        cerr << "Frame buffer is not complete" << endl;
+    }
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
     GLFW::loop(window, [&](float time, float deltaTime) {
         processKeyboardInput(window, deltaTime);
+
+        glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+        glEnable(GL_DEPTH_TEST);
 
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -302,6 +362,16 @@ int main()
 
         shader.setMat4("model", mat4(1.0f));
         glDrawArrays(GL_TRIANGLES, 0, sizeof(planeVertices) / sizeof(planeVertices[0]));
+
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glDisable(GL_DEPTH_TEST);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        screenShader.use();
+
+        glBindVertexArray(screenVAO);
+        glBindTexture(GL_TEXTURE_2D, textureColorBuffer);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
     });
 }
 
