@@ -71,6 +71,7 @@ set(4.AdvancedOpenGL
     2.StencilTesting
     3.Blending
     4.FaceCulling
+    5.FrameBuffers
 )
 
 file(GLOB DLLS ${CMAKE_SOURCE_DIR}/dll/*.dll)
