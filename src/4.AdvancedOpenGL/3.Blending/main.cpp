@@ -5,12 +5,18 @@
 #include <GLFW.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <map>
 #include <Model.hpp>
 #include <optional>
 #include <Shader.hpp>
 
 using namespace glm;
 using namespace std;
+
+struct transparentObject {
+    vec3 location;
+    Texture texture;
+};
 
 void processKeyboardInput(GLFWwindow* window, float deltaTime);
 void processMouseMovement([[maybe_unused]] GLFWwindow* window, double x, double y);
@@ -33,6 +39,9 @@ int main()
     Glad::init();
 
     glEnable(GL_DEPTH_TEST);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     const Vertex cubeVertices[] {
         // Front
@@ -219,7 +228,7 @@ int main()
         },
     };
 
-    const Vertex grassVertices[] = {
+    const Vertex transparentVertices[] = {
         Vertex {
             .position = vec3(0.0f, 0.5f, 0.0f),
             .textureCoordinates = vec2(0.0f, 1.0f)
@@ -274,13 +283,13 @@ int main()
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, textureCoordinates));
     glEnableVertexAttribArray(1);
 
-    unsigned int grassVBO, grassVAO;
-    glGenVertexArrays(1, &grassVAO);
-    glGenBuffers(1, &grassVBO);
-    glBindVertexArray(grassVAO);
+    unsigned int transparentVBO, transparentVAO;
+    glGenVertexArrays(1, &transparentVAO);
+    glGenBuffers(1, &transparentVBO);
+    glBindVertexArray(transparentVAO);
 
-    glBindBuffer(GL_ARRAY_BUFFER, grassVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(grassVertices), grassVertices, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, transparentVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(transparentVertices), transparentVertices, GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
     glEnableVertexAttribArray(0);
@@ -289,17 +298,29 @@ int main()
     glEnableVertexAttribArray(1);
 
     vector<vec3> grassLocations = {
-        vec3(-1.5f,  0.0f, -0.48f),
-        vec3( 1.5f,  0.0f,  0.51f),
-        vec3( 0.0f,  0.0f,  0.7f),
-        vec3(-0.3f,  0.0f, -2.3f),
-        vec3( 0.5f,  0.0f, -0.6f)
+        vec3(-1.5f, 0.0f, -0.49f),
+        vec3(1.5f,  0.0f, 0.52f),
+        vec3(0.0f,  0.0f, 0.7f),
+        vec3(-0.3f, 0.0f, -2.3f),
+        vec3(0.5f,  0.0f, -0.6f)
+    };
+
+    vector<vec3> windowLocations
+    {
+        vec3(-1.5f, 0.0f, -0.48f),
+        vec3(1.5f,  0.0f, 0.51f),
+        vec3(0.0f,  0.0f, 0.71f),
+        vec3(-0.3f, 0.0f, -2.31f),
+        vec3(0.5f,  0.0f, -0.61f)
     };
 
     Texture cubeTexture(GL_TEXTURE_2D, FileSystem::getResourcePath("textures/marble.jpg").c_str());
     Texture planeTexture(GL_TEXTURE_2D, FileSystem::getResourcePath("textures/metal.png").c_str());
+
     Texture grassTexture(GL_TEXTURE_2D, FileSystem::getResourcePath("textures/grass.png").c_str());
     grassTexture.setWrap(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
+    Texture windowTexture(GL_TEXTURE_2D, FileSystem::getResourcePath("textures/window.png").c_str());
+    windowTexture.setWrap(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
 
     Shader shader("shaders/shader.vert", "shaders/shader.frag");
 
@@ -354,17 +375,38 @@ int main()
         shader.setMat4("model", mat4(1.0f));
         glDrawArrays(GL_TRIANGLES, 0, sizeof(planeVertices) / sizeof(planeVertices[0]));
 
-        glBindVertexArray(grassVAO);
-        grassTexture.bind(0);
+        glBindVertexArray(transparentVAO);
 
-        for (vec3& grassLocation : grassLocations)
+        map<float, transparentObject> sorted;
+        for (vec3& location : grassLocations)
         {
+            float distance = length(camera.position - location);
+            sorted.insert(pair(distance, transparentObject { location, grassTexture }));
+        }
+
+        for (vec3& location : windowLocations)
+        {
+            float distance = glm::length(camera.position - location);
+            sorted.insert(pair(distance, transparentObject { location, windowTexture }));
+        }
+
+        for (auto iterator = sorted.rbegin(); iterator != sorted.rend(); ++iterator)
+        {
+            transparentObject object = iterator->second;
+            object.texture.bind(0);
+
+//            cout << object.texture.path << ": " << iterator->first << endl;
+
+
+
             model = mat4(1.0f);
-            model = translate(model, grassLocation);
+            model = translate(model, object.location);
 
             shader.setMat4("model", model);
-            glDrawArrays(GL_TRIANGLES, 0, sizeof(grassVertices) / sizeof(grassVertices[0]));
+            glDrawArrays(GL_TRIANGLES, 0, 6);
         }
+
+//        cout << endl;
     });
 }
 
