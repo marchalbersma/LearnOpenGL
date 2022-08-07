@@ -72,6 +72,7 @@ set(4.AdvancedOpenGL
     3.Blending
     4.FaceCulling
     5.FrameBuffers
+    6.CubeMaps
 )
 
 file(GLOB DLLS ${CMAKE_SOURCE_DIR}/dll/*.dll)
