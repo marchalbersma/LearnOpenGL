@@ -20,7 +20,7 @@ Texture::Texture(const int target, const char* path) : target(target), path(stri
     glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    loadFromFile(path);
+    loadFromFile();
 }
 
 Texture::Texture(int target, Type type, const char* path) : Texture(target, path)
@@ -34,11 +34,17 @@ void Texture::bind(const int unit) const
     glBindTexture(target, id);
 }
 
-void Texture::loadFromFile(const char* path)
+void Texture::setWrap(const int s, const int t) const
+{
+    glTexParameteri(target, GL_TEXTURE_WRAP_S, s);
+    glTexParameteri(target, GL_TEXTURE_WRAP_T, t);
+}
+
+void Texture::loadFromFile()
 {
     stbi_set_flip_vertically_on_load(true);
 
-    unsigned char* image = stbi_load(path, &width, &height, &channels, 0);
+    unsigned char* image = stbi_load(path.c_str(), &width, &height, &channels, 0);
     const int colors = channels == 4 ? GL_RGBA : GL_RGB;
 
     if (!image)

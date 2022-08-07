@@ -204,7 +204,7 @@ int main()
         Vertex {
             .position = vec3(-5.0f, -0.5f, -5.0f),
             .textureCoordinates = vec2(0.0f, 2.0f)
-    },
+        },
         Vertex {
             .position = vec3(5.0f, -0.5f, 5.0f),
             .textureCoordinates = vec2(2.0f, 0.0f)
@@ -217,6 +217,33 @@ int main()
             .position = vec3(5.0f, -0.5f, -5.0f),
             .textureCoordinates = vec2(2.0f, 2.0f)
         },
+    };
+
+    const Vertex grassVertices[] = {
+        Vertex {
+            .position = vec3(0.0f, 0.5f, 0.0f),
+            .textureCoordinates = vec2(0.0f, 1.0f)
+        },
+        Vertex {
+            .position = vec3(0.0f, -0.5f, 0.0f),
+            .textureCoordinates = vec2(0.0f, 0.0f)
+        },
+        Vertex {
+            .position = vec3(1.0f, -0.5f, 0.0f),
+            .textureCoordinates = vec2(1.0f, 0.0f)
+        },
+        Vertex {
+            .position = vec3(0.0f, 0.5f, 0.0f),
+            .textureCoordinates = vec2(0.0f, 1.0f)
+        },
+        Vertex {
+            .position = vec3(1.0f, -0.5f, 0.0f),
+            .textureCoordinates = vec2(1.0f, 0.0f)
+        },
+        Vertex {
+            .position = vec3(1.0f, 0.5f, 0.0f),
+            .textureCoordinates = vec2(1.0f, 1.0f)
+        }
     };
 
     unsigned int cubeVBO, cubeVAO;
@@ -247,8 +274,32 @@ int main()
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, textureCoordinates));
     glEnableVertexAttribArray(1);
 
+    unsigned int grassVBO, grassVAO;
+    glGenVertexArrays(1, &grassVAO);
+    glGenBuffers(1, &grassVBO);
+    glBindVertexArray(grassVAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, grassVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(grassVertices), grassVertices, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
+    glEnableVertexAttribArray(0);
+
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, textureCoordinates));
+    glEnableVertexAttribArray(1);
+
+    vector<vec3> grassLocations = {
+        vec3(-1.5f,  0.0f, -0.48f),
+        vec3( 1.5f,  0.0f,  0.51f),
+        vec3( 0.0f,  0.0f,  0.7f),
+        vec3(-0.3f,  0.0f, -2.3f),
+        vec3( 0.5f,  0.0f, -0.6f)
+    };
+
     Texture cubeTexture(GL_TEXTURE_2D, FileSystem::getResourcePath("textures/marble.jpg").c_str());
     Texture planeTexture(GL_TEXTURE_2D, FileSystem::getResourcePath("textures/metal.png").c_str());
+    Texture grassTexture(GL_TEXTURE_2D, FileSystem::getResourcePath("textures/grass.png").c_str());
+    grassTexture.setWrap(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
 
     Shader shader("shaders/shader.vert", "shaders/shader.frag");
 
@@ -302,6 +353,18 @@ int main()
 
         shader.setMat4("model", mat4(1.0f));
         glDrawArrays(GL_TRIANGLES, 0, sizeof(planeVertices) / sizeof(planeVertices[0]));
+
+        glBindVertexArray(grassVAO);
+        grassTexture.bind(0);
+
+        for (vec3& grassLocation : grassLocations)
+        {
+            model = mat4(1.0f);
+            model = translate(model, grassLocation);
+
+            shader.setMat4("model", model);
+            glDrawArrays(GL_TRIANGLES, 0, sizeof(grassVertices) / sizeof(grassVertices[0]));
+        }
     });
 }
 

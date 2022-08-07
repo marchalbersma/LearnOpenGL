@@ -22,8 +22,9 @@ public:
     Texture(int target, const char* path);
     Texture(int target, Type type, const char* path);
     void bind(int unit) const;
+    void setWrap(int s, int t) const;
 private:
-    void loadFromFile(const char* path);
+    void loadFromFile();
 };
 
 #endif
