@@ -35,6 +35,10 @@ int main()
 
     glEnable(GL_DEPTH_TEST);
 
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_FRONT);
+    glFrontFace(GL_CCW);
+
     const Vertex vertices[] {
         // Front
         Vertex {
@@ -42,24 +46,24 @@ int main()
             .textureCoordinates = vec2(0.0f, 1.0f)
         },
         Vertex {
-            .position = vec3(0.5f, 0.5f, 0.5f),
-            .textureCoordinates = vec2(1.0f, 1.0f)
-        },
-        Vertex {
             .position = vec3(0.5f, -0.5f, 0.5f),
             .textureCoordinates = vec2(1.0f, 0.0f)
+        },
+        Vertex {
+            .position = vec3(0.5f, 0.5f, 0.5f),
+            .textureCoordinates = vec2(1.0f, 1.0f)
         },
         Vertex {
             .position = vec3(-0.5f, 0.5f, 0.5f),
             .textureCoordinates = vec2(0.0f, 1.0f)
         },
         Vertex {
-            .position = vec3(0.5f, -0.5f, 0.5f),
-            .textureCoordinates = vec2(1.0f, 0.0f)
-        },
-        Vertex {
             .position = vec3(-0.5f, -0.5f, 0.5f),
             .textureCoordinates = vec2(0.0f, 0.0f)
+        },
+        Vertex {
+            .position = vec3(0.5f, -0.5f, 0.5f),
+            .textureCoordinates = vec2(1.0f, 0.0f)
         },
 
         // Back
@@ -106,12 +110,12 @@ int main()
             .textureCoordinates = vec2(1.0f, 0.0f)
         },
         Vertex {
-            .position = vec3(-0.5f, 0.5f, -0.5f),
-            .textureCoordinates = vec2(0.0f, 1.0f)
-        },
-        Vertex {
             .position = vec3(0.5f, 0.5f, -0.5f),
             .textureCoordinates = vec2(1.0f, 1.0f)
+        },
+        Vertex {
+            .position = vec3(-0.5f, 0.5f, -0.5f),
+            .textureCoordinates = vec2(0.0f, 1.0f)
         },
 
         // Bottom
@@ -120,12 +124,12 @@ int main()
             .textureCoordinates = vec2(0.0f, 0.0f)
         },
         Vertex {
-            .position = vec3(0.5f, -0.5f, 0.5f),
-            .textureCoordinates = vec2(1.0f, 0.0f)
-        },
-        Vertex {
             .position = vec3(-0.5f, -0.5f, -0.5f),
             .textureCoordinates = vec2(0.0f, 1.0f)
+        },
+        Vertex {
+            .position = vec3(0.5f, -0.5f, 0.5f),
+            .textureCoordinates = vec2(1.0f, 0.0f)
         },
         Vertex {
             .position = vec3(0.5f, -0.5f, 0.5f),
@@ -146,12 +150,12 @@ int main()
             .textureCoordinates = vec2(1.0f, 1.0f)
         },
         Vertex {
-            .position = vec3(-0.5f, -0.5f, 0.5f),
-            .textureCoordinates = vec2(1.0f, 0.0f)
-        },
-        Vertex {
             .position = vec3(-0.5f, 0.5f, -0.5f),
             .textureCoordinates = vec2(0.0f, 1.0f)
+        },
+        Vertex {
+            .position = vec3(-0.5f, -0.5f, 0.5f),
+            .textureCoordinates = vec2(1.0f, 0.0f)
         },
         Vertex {
             .position = vec3(-0.5f, -0.5f, 0.5f),
@@ -184,12 +188,12 @@ int main()
             .textureCoordinates = vec2(1.0f, 0.0f)
         },
         Vertex {
-            .position = vec3(0.5f, 0.5f, -0.5f),
-            .textureCoordinates = vec2(0.0f, 1.0f)
-        },
-        Vertex {
             .position = vec3(0.5f, -0.5f, -0.5f),
             .textureCoordinates = vec2(0.0f, 0.0f)
+        },
+        Vertex {
+            .position = vec3(0.5f, 0.5f, -0.5f),
+            .textureCoordinates = vec2(0.0f, 1.0f)
         },
     };
 
