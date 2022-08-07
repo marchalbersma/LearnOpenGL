@@ -9,15 +9,6 @@
 #include <optional>
 #include <Shader.hpp>
 
-
-
-
-
-#include <iostream>
-
-
-
-
 using namespace glm;
 using namespace std;
 
@@ -42,6 +33,7 @@ int main()
     Glad::init();
 
     glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
 
     const Vertex cubeVertices[] {
         // Front
